@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://chauke12345.github.io/EdVance-Tech-website/sitemap.xml
