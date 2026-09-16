@@ -622,19 +622,37 @@ a {
     background: #f5f8fc;
 }
 
+
+/* =========================
+   PROJECTS GRID
+========================= */
+
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    align-items: start;
 }
+
+/* =========================
+   PROJECT CARD
+========================= */
 
 .project-card {
     background: #ffffff;
     border: 1px solid #e4ebf3;
     border-radius: 18px;
     box-shadow: 0 15px 40px rgba(6, 28, 70, 0.08);
-    transition: 0.3s ease;
+
+    display: flex;
+    flex-direction: column;
+    height: auto;
+
     overflow: hidden;
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
 .project-card:hover {
@@ -642,9 +660,19 @@ a {
     box-shadow: 0 25px 50px rgba(6, 28, 70, 0.14);
 }
 
+
+/* =========================
+   PROJECT IMAGE
+========================= */
+
 .project-visual {
+    width: 100%;
     height: 210px;
     overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     background:
         radial-gradient(
@@ -661,27 +689,32 @@ a {
 
 .project-visual img {
     width: 100%;
-    height: 100%;
+    height: auto;
     object-fit: cover;
     object-position: top;
     display: block;
 }
 
-.project-visual span {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
-    color: #ffffff;
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 3px;
+/* Hlophe logo/icon should not be cropped */
+
+.project-card:nth-child(3) .project-visual img {
+    object-fit: contain;
+    object-position: center;
+    padding: 20px;
 }
 
+
+/* =========================
+   PROJECT CONTENT
+========================= */
+
 .project-content {
-    padding: 30px;
+    padding: 28px;
+
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .project-type {
@@ -689,30 +722,105 @@ a {
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 1.5px;
-    margin-bottom: 12px;
+    line-height: 1.5;
+
+    margin: 0 0 12px;
 }
 
 .project-card h3 {
     color: #061c46;
-    font-size: 27px;
-    margin-bottom: 15px;
+    font-size: 25px;
+    line-height: 1.25;
+
+    margin: 0 0 15px;
 }
 
-.project-card .project-content > p:not(.project-type) {
+.project-card
+.project-content
+> p:not(.project-type):not(.project-tech) {
+
     color: #465160;
     font-size: 15px;
     line-height: 1.7;
-    margin-bottom: 22px;
+    margin: 0 0 16px;
 }
+
+
+/* =========================
+   PROJECT TECHNOLOGY
+========================= */
+
+.project-tech {
+    color: #657180;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.6;
+
+    margin: 8px 0 22px;
+}
+
+
+/* =========================
+   PROJECT LINK
+========================= */
 
 .project-link {
     color: #006bc7;
     font-size: 14px;
     font-weight: 700;
+    text-decoration: none;
+
+    
+
+    display: inline-flex;
+    align-items: center;
 }
 
 .project-link:hover {
     color: #00aeef;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 1100px) {
+
+    .projects-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 650px) {
+
+    .projects {
+        padding: 75px 0;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .project-visual {
+        height: 210px;
+    }
+
+    .project-content {
+        padding: 24px;
+    }
+
+    .project-card h3 {
+        font-size: 24px;
+    }
+
 }
 
 /* =========================
@@ -939,78 +1047,128 @@ a {
 ========================= */
 
 .packages {
-    padding: 110px 0;
+    padding: 80px 0;
     background: #ffffff;
 }
 
 .packages .section-heading {
     max-width: 760px;
-    margin: 0 auto 60px;
+    margin: 0 auto 40px;
     text-align: center;
 }
+
+
+/* =========================
+   PACKAGES GRID
+========================= */
 
 .packages-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
+    gap: 24px;
     align-items: stretch;
 }
+
+
+/* =========================
+   PACKAGE CARD
+========================= */
 
 .package-card {
     display: flex;
     flex-direction: column;
+
     background: #ffffff;
     border: 1px solid #e4ebf3;
     border-radius: 18px;
-    padding: 36px 30px;
-    box-shadow: 0 15px 40px rgba(6, 28, 70, 0.08);
-    transition: 0.3s ease;
+
+    padding: 28px 26px;
+
+    box-shadow: 0 12px 32px rgba(6, 28, 70, 0.08);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
 .package-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 25px 50px rgba(6, 28, 70, 0.14);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 42px rgba(6, 28, 70, 0.13);
 }
+
+
+/* =========================
+   PACKAGE LABEL
+========================= */
 
 .package-label {
     color: #006bc7;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 1.5px;
-    margin-bottom: 12px;
+
+    margin: 0 0 10px;
 }
+
+
+/* =========================
+   PACKAGE TITLE
+========================= */
 
 .package-card h3 {
     color: #061c46;
-    font-size: 26px;
-    margin-bottom: 10px;
+    font-size: 24px;
+    line-height: 1.3;
+
+    margin: 0 0 8px;
 }
+
+
+/* =========================
+   PRICE
+========================= */
 
 .package-price {
     color: #006bc7;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
-    margin-bottom: 18px;
+
+    margin: 0 0 15px;
 }
 
-.package-card > p:not(.package-label) {
+
+/* =========================
+   DESCRIPTION
+========================= */
+
+.package-card > p:not(.package-label):not(.package-price) {
     color: #465160;
-    font-size: 15px;
-    line-height: 1.7;
-    margin-bottom: 22px;
+    font-size: 14px;
+    line-height: 1.6;
+
+    margin: 0 0 16px;
 }
+
+
+/* =========================
+   FEATURES
+========================= */
 
 .package-card ul {
     list-style: none;
     padding: 0;
-    margin: 0 0 30px;
+
+    margin: 8px 0 20px;
+
     flex-grow: 1;
 }
 
 .package-card li {
     color: #465160;
-    font-size: 14px;
-    padding: 10px 0;
+    font-size: 13px;
+
+    padding: 8px 0;
+
     border-bottom: 1px solid #edf1f6;
 }
 
@@ -1018,16 +1176,28 @@ a {
     content: "✓";
     color: #006bc7;
     font-weight: 700;
-    margin-right: 10px;
+
+    margin-right: 9px;
 }
+
+
+/* =========================
+   BUTTON
+========================= */
 
 .package-card .btn {
     width: 100%;
     text-align: center;
+
     margin-top: auto;
+
+    padding: 12px 16px;
 }
 
-/* FEATURED PACKAGE */
+
+/* =========================
+   FEATURED PACKAGE
+========================= */
 
 .featured-package {
     border: 2px solid #006bc7;
@@ -1037,6 +1207,41 @@ a {
     color: #00aeef;
 }
 
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+
+    .packages-grid {
+        grid-template-columns: 1fr;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .packages {
+        padding: 60px 0;
+    }
+
+    .packages .section-heading {
+        margin-bottom: 30px;
+    }
+
+    .package-card {
+        padding: 24px 20px;
+    }
+
+}
 /* =========================
    EDVANCE TECH BUSINESS LINK
 ========================= */
@@ -1085,6 +1290,195 @@ a {
 
 .business-link-card .btn:hover {
     transform: translateY(-3px);
+}
+
+/* =========================================================
+   OUR IMPACT
+========================================================= */
+
+.impact {
+    padding: 75px 0;
+    background: #061c46;
+    color: #ffffff;
+}
+
+
+/* =========================
+   HEADING
+========================= */
+
+.impact-heading {
+    max-width: 700px;
+    margin: 0 auto 42px;
+    text-align: center;
+}
+
+.impact-heading .section-label {
+    color: #00aeef;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin: 0 0 10px;
+}
+
+.impact-heading h2 {
+    color: #ffffff;
+    font-size: 34px;
+    margin: 0 0 12px;
+}
+
+.impact-heading > p:not(.section-label) {
+    color: #c9d5e6;
+    font-size: 15px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+
+/* =========================
+   IMPACT NUMBERS
+========================= */
+
+.impact-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+
+    padding: 30px 0;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.impact-stat {
+    text-align: center;
+}
+
+.impact-stat strong {
+    display: block;
+
+    color: #00aeef;
+    font-size: 34px;
+    font-weight: 800;
+
+    margin-bottom: 6px;
+}
+
+.impact-stat span {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   BUSINESSES
+========================= */
+
+.businesses-worked {
+    margin-top: 35px;
+}
+
+.businesses-label {
+    color: #8ea4c1;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-align: center;
+
+    margin: 0 0 20px;
+}
+
+.businesses-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+
+.business-item {
+    padding: 18px 20px;
+
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+
+    text-align: center;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease;
+}
+
+.business-item:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.10);
+}
+
+.business-item h3 {
+    color: #ffffff;
+    font-size: 17px;
+
+    margin: 0 0 6px;
+}
+
+.business-item p {
+    color: #9fc2df;
+    font-size: 13px;
+
+    margin: 0;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 850px) {
+
+    .impact-stats {
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 30px;
+    }
+
+    .businesses-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 550px) {
+
+    .impact {
+        padding: 55px 0;
+    }
+
+    .impact-heading {
+        margin-bottom: 30px;
+    }
+
+    .impact-heading h2 {
+        font-size: 28px;
+    }
+
+    .impact-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px 12px;
+    }
+
+    .impact-stat strong {
+        font-size: 28px;
+    }
+
+    .impact-stat span {
+        font-size: 12px;
+    }
+
 }
 /* =====================================================
    FINAL RESPONSIVE FIX
