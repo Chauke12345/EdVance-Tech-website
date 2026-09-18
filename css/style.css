@@ -612,10 +612,9 @@ a {
 .about-values span {
     font-weight: 600;
 }
-
-/* =========================
+/* =========================================================
    PROJECTS
-========================= */
+========================================================= */
 
 .projects {
     padding: 110px 0;
@@ -623,62 +622,65 @@ a {
 }
 
 
-/* =========================
+/* =========================================================
    PROJECTS GRID
-========================= */
+========================================================= */
 
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 24px;
-    align-items: start;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+    margin-top: 45px;
 }
 
-/* =========================
+
+/* =========================================================
    PROJECT CARD
-========================= */
+========================================================= */
 
 .project-card {
     background: #ffffff;
     border: 1px solid #e4ebf3;
-    border-radius: 18px;
-    box-shadow: 0 15px 40px rgba(6, 28, 70, 0.08);
+    border-radius: 22px;
+    overflow: hidden;
 
     display: flex;
     flex-direction: column;
-    height: auto;
 
-    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(6, 28, 70, 0.08);
 
     transition:
         transform 0.3s ease,
-        box-shadow 0.3s ease;
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
 }
 
 .project-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 25px 50px rgba(6, 28, 70, 0.14);
+    transform: translateY(-6px);
+    box-shadow: 0 22px 50px rgba(6, 28, 70, 0.14);
+    border-color: #cbd9e8;
 }
 
 
-/* =========================
+/* =========================================================
    PROJECT IMAGE
-========================= */
+========================================================= */
 
 .project-visual {
     width: 100%;
-    height: 210px;
-    overflow: hidden;
+    height: 250px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
+    overflow: hidden;
+
     background:
         radial-gradient(
             circle at 70% 30%,
-            rgba(0, 174, 239, 0.35),
-            transparent 35%
+            rgba(0, 174, 239, 0.25),
+            transparent 40%
         ),
         linear-gradient(
             135deg,
@@ -689,28 +691,27 @@ a {
 
 .project-visual img {
     width: 100%;
-    height: auto;
+    height: 100%;
+
     object-fit: cover;
     object-position: top;
+
     display: block;
+
+    transition: transform 0.4s ease;
+}
+
+.project-card:hover .project-visual img {
+    transform: scale(1.03);
 }
 
 
-/* Hlophe logo/icon should not be cropped */
-
-.project-card:nth-child(3) .project-visual img {
-    object-fit: contain;
-    object-position: center;
-    padding: 20px;
-}
-
-
-/* =========================
+/* =========================================================
    PROJECT CONTENT
-========================= */
+========================================================= */
 
 .project-content {
-    padding: 28px;
+    padding: 30px;
 
     display: flex;
     flex-direction: column;
@@ -718,85 +719,185 @@ a {
 }
 
 .project-type {
+    margin: 0 0 12px;
+
     color: #006bc7;
+
     font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
     line-height: 1.5;
 
-    margin: 0 0 12px;
+    text-transform: uppercase;
 }
 
 .project-card h3 {
-    color: #061c46;
-    font-size: 25px;
-    line-height: 1.25;
-
     margin: 0 0 15px;
+
+    color: #061c46;
+
+    font-size: 26px;
+    line-height: 1.25;
 }
 
-.project-card
-.project-content
-> p:not(.project-type):not(.project-tech) {
+.project-content > p:not(.project-type):not(.project-tech) {
+    margin: 0 0 20px;
 
     color: #465160;
+
     font-size: 15px;
-    line-height: 1.7;
-    margin: 0 0 16px;
+    line-height: 1.75;
 }
 
 
-/* =========================
-   PROJECT TECHNOLOGY
-========================= */
+/* =========================================================
+   TECHNOLOGY
+========================================================= */
 
 .project-tech {
-    color: #657180;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.6;
+    margin-top: auto;
+    margin-bottom: 22px;
 
-    margin: 8px 0 22px;
+    padding-top: 18px;
+
+    border-top: 1px solid #edf1f5;
+
+    color: #657180;
+
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.7;
 }
 
 
-/* =========================
-   PROJECT LINK
-========================= */
+/* =========================================================
+   PROJECT BUTTON
+========================================================= */
 
 .project-link {
-    color: #006bc7;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-
-    
+    width: fit-content;
 
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+
+    padding: 11px 18px;
+
+    background: #061c46;
+    color: #ffffff;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease;
 }
 
 .project-link:hover {
-    color: #00aeef;
+    background: #006bc7;
+    color: #ffffff;
+
+    transform: translateX(3px);
 }
 
 
-/* =========================
+/* =========================================================
+   FEATURED PROJECT
+   CARWASH CONNECT
+========================================================= */
+
+.project-card-featured {
+    grid-column: 1 / -1;
+
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+
+    min-height: 400px;
+
+    background: #ffffff;
+}
+
+.project-card-featured .project-visual {
+    height: 100%;
+    min-height: 400px;
+}
+
+.project-card-featured .project-visual img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: top;
+
+    padding: 0;
+}
+
+
+
+.project-card-featured .project-content {
+    padding: 50px;
+
+    justify-content: center;
+}
+
+.project-card-featured h3 {
+    font-size: 38px;
+    margin-bottom: 20px;
+}
+
+.project-card-featured
+.project-content
+> p:not(.project-type):not(.project-tech) {
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   HLOPHE LOGO
+========================================================= */
+
+.project-card img[src*="Hlophe"] {
+    object-fit: contain;
+    object-position: center;
+    padding: 25px;
+}
+
+
+/* =========================================================
    TABLET
-========================= */
+========================================================= */
 
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
 
-    .projects-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .project-card-featured {
+        grid-template-columns: 1fr;
+    }
+
+    .project-card-featured .project-visual {
+        height: 280px;
+        min-height: 280px;
+    }
+
+    .project-card-featured .project-content {
+        padding: 35px;
+    }
+
+    .project-card-featured h3 {
+        font-size: 32px;
     }
 
 }
 
 
-/* =========================
+/* =========================================================
    MOBILE
-========================= */
+========================================================= */
 
 @media (max-width: 650px) {
 
@@ -807,22 +908,40 @@ a {
     .projects-grid {
         grid-template-columns: 1fr;
         gap: 22px;
+        margin-top: 35px;
+    }
+
+    .project-card-featured {
+        grid-column: auto;
     }
 
     .project-visual {
-        height: 210px;
+        height: 220px;
     }
 
-    .project-content {
-        padding: 24px;
+    .project-card-featured .project-visual {
+        height: 230px;
+        min-height: 230px;
+    }
+
+    .project-card-featured .project-visual img {
+        padding: 25px;
+    }
+
+    .project-content,
+    .project-card-featured .project-content {
+        padding: 25px;
     }
 
     .project-card h3 {
         font-size: 24px;
     }
 
-}
+    .project-card-featured h3 {
+        font-size: 28px;
+    }
 
+}
 /* =========================
    CONTACT
 ========================= */
