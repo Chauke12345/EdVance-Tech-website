@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#030b18">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <meta name="description" content="{% block meta_description %}EdVance Tech builds websites, web applications and business systems for growing businesses in South Africa.{% endblock %}">
+    <meta name="google-site-verification" content="wXFMFQgItTEyclgglpudyK4sRFhXHdLeq2V4PG_pF5I">
+    <title>{% block title %}EdVance Tech | Digital Solutions{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+
+    <style>
+        .nav-message-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .nav-notification-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 20px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+        }
+    </style>
+
+</head>
+<body>
+<header class="site-header">
+    <div class="container nav-wrapper">
+        <a class="brand" href="/" aria-label="EdVance Tech home">
+            <img class="brand-mark" src="{% static 'images/EdVance-Mark.png' %}" alt="EdVance Tech">
+            <span class="brand-copy">EdVance <span>Tech</span></span>
+        </a>
+        <nav class="main-nav" aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/services/">Services</a>
+            <a href="/projects/">Projects</a>
+            <a href="/packages/">Packages</a>
+            <a href="/contact/">Contact</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'client_dashboard' %}">My Portal</a>
+                <a href="{% url 'message_inbox' %}" class="nav-message-link">
+                    <span aria-hidden="true">&#128276;</span> Messages
+                    {% if unread_message_count > 0 %}
+                        <span class="nav-notification-badge"
+                              aria-label="{{ unread_message_count }} unread messages">
+                            {{ unread_message_count }}
+                        </span>
+                    {% endif %}
+                </a>
+                {% if user.is_staff %}
+                    <a href="{% url 'staff_dashboard' %}">Staff Dashboard</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'client_login' %}">Client Login</a>
+            {% endif %}
+        </nav>
+        <div class="nav-actions">
+            <a class="btn btn-primary btn-small nav-quote" href="/contact/">Request a Quote <span>&rarr;</span></a>
+            <button class="menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">&#9776;</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-row">
+            <a class="footer-brand" href="/">
+                <img src="{% static 'images/EdVance-Mark.png' %}" alt="">
+                <strong>EdVance <span style="color:#22c8ff">Tech</span></strong>
+            </a>
+            <nav class="footer-links" aria-label="Footer navigation">
+                <a href="/about/">About</a>
+                <a href="/services/">Services</a>
+                <a href="/projects/">Projects</a>
+                <a href="/packages/">Packages</a>
+                <a href="/contact/">Contact</a>
+                <a href="mailto:edvancetechsolutions@gmail.com">Email us</a>
+            </nav>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 EdVance Tech. All rights reserved.</span>
+            <span>Technology for a brighter tomorrow.</span>
+        </div>
+    </div>
+</footer>
+<script src="{% static 'js/script.js' %}"></script>
+{% block extra_js %}{% endblock %}
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/static/js/service-worker.js")
+            .catch(error => console.error("EdVance service worker:", error));
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Create Client Account | EdVance Tech{% endblock %}
+
+{% block content %}
+<section class="client-auth-section">
+    <div class="client-auth-card">
+        <div class="client-auth-heading">
+            <span class="eyebrow">CLIENT PORTAL</span>
+            <h1>Create your client account.</h1>
+            <p>Register to manage your projects and communicate with EdVance Tech.</p>
+        </div>
+
+        <form method="post" class="client-auth-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="helptext">{{ field.help_text|safe }}</div>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            {% if form.non_field_errors %}
+                {{ form.non_field_errors }}
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Create account ?</button>
+        </form>
+
+        <div class="client-auth-footer">
+            Already registered? <a href="{% url 'client_login' %}">Sign in here</a>.
+        </div>
+    </div>
+</section>
+{% endblock %}

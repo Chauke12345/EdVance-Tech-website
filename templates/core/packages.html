@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Packages & Pricing | EdVance Tech{% endblock %}
+{% block meta_description %}Explore affordable website development, e-commerce and custom application packages from EdVance Tech.{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <p class="breadcrumb"><a href="/">Home</a> / Packages</p>
+        <p class="eyebrow">Packages & pricing</p>
+        <h1>A clear place <span class="gradient-text">to begin.</span></h1>
+        <p class="lead">Affordable starting options for your next digital project.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="content-grid">
+            <article class="content-card">
+                <p class="eyebrow">Starter</p>
+                <h2>Starter Website</h2>
+                <div class="price">R2,000</div>
+                <p>A simple, professional online presence for a small business or personal brand.</p>
+                <div style="margin-top:22px">
+                    <a class="btn btn-outline" href="/contact/?package=Starter%20Website">Enquire →</a>
+                </div>
+            </article>
+
+            <article class="content-card" style="border-color:rgba(0,163,255,.55)">
+                <p class="eyebrow">Business</p>
+                <h2>Business Website</h2>
+                <div class="price">R4,000</div>
+                <p>A multi-page website for businesses ready to present their services clearly.</p>
+                <div style="margin-top:22px">
+                    <a class="btn btn-primary" href="/contact/?package=Business%20Website">Enquire →</a>
+                </div>
+            </article>
+
+            <article class="content-card">
+                <p class="eyebrow">Online Store</p>
+                <h2>E-commerce Website</h2>
+                <div class="price">From R6,500</div>
+                <p>An online store to showcase products and support online shopping.</p>
+                <div style="margin-top:22px">
+                    <a class="btn btn-outline" href="/contact/?package=E-commerce%20Website">Enquire →</a>
+                </div>
+            </article>
+
+            <article class="content-card">
+                <p class="eyebrow">Advanced Solutions</p>
+                <h2>Custom Applications</h2>
+                <div class="price">From R12,000</div>
+                <p>Custom portals, dashboards and business systems designed around your workflow.</p>
+                <div style="margin-top:22px">
+                    <a class="btn btn-outline" href="/contact/?package=Custom%20Applications">Discuss your idea →</a>
+                </div>
+            </article>
+        </div>
+
+        <p class="eyebrow" style="margin-top:55px">Ongoing and additional services</p>
+        <div class="content-grid">
+            <article class="content-card">
+                <h2>Website Hosting</h2>
+                <div class="price">R200 <span>/ month</span></div>
+                <p>Hosting for your website, billed separately from development.</p>
+            </article>
+
+            <article class="content-card">
+                <h2>Website Maintenance</h2>
+                <div class="price">R500 <span>/ month</span></div>
+                <p>Optional ongoing website maintenance and support.</p>
+            </article>
+
+            <article class="content-card">
+                <h2>Additional Development</h2>
+                <div class="price">R350 <span>/ hour</span></div>
+                <p>Additional development work outside the agreed project scope.</p>
+            </article>
+        </div>
+
+        <p class="small" style="margin-top:24px">
+            All development prices are starting prices. Final quotations depend on
+            project scope, features and requirements. Hosting and maintenance are
+            separate services. Maintenance is optional.
+        </p>
+    </div>
+</section>
+
+<section class="section-tight">
+    <div class="container">
+        <div class="cta">
+            <div>
+                <p class="eyebrow">Ready to get started?</p>
+                <h2>Let's plan your next project.</h2>
+            </div>
+            <a class="btn btn-primary" href="/contact/">Request a quote →</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

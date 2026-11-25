@@ -1,0 +1,279 @@
+﻿{% extends "base.html" %}
+{% block title %}Messages | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.messages-page {
+    padding: 55px 20px 85px;
+}
+.messages-inner {
+    max-width: 1100px;
+    margin: auto;
+}
+.messages-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+.messages-header h1 {
+    font-size: clamp(30px, 5vw, 42px);
+    margin: 10px 0;
+}
+.messages-header p {
+    color: #aabbd0;
+}
+.messages-count {
+    background: #10243b;
+    border: 1px solid rgba(34,200,255,.3);
+    border-radius: 14px;
+    padding: 17px 24px;
+    color: #22c8ff;
+}
+.messages-count strong {
+    display: block;
+    font-size: 27px;
+}
+.messages-panel {
+    background: linear-gradient(145deg,#0d1c31,#091525);
+    border: 1px solid rgba(34,200,255,.17);
+    border-radius: 18px;
+    padding: 26px;
+    margin-bottom: 32px;
+}
+.messages-panel h2 {
+    font-size: 20px;
+    margin: 0 0 20px;
+}
+.messages-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    align-items: end;
+    gap: 16px;
+}
+.messages-form label {
+    display: block;
+    color: #aabbd0;
+    font-size: 13px;
+    margin-bottom: 9px;
+}
+.messages-form input,
+.messages-form select {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px;
+    border: 1px solid #29435f;
+    border-radius: 9px;
+    background: #071426;
+    color: white;
+}
+.messages-form input:focus,
+.messages-form select:focus {
+    outline: 1px solid #22c8ff;
+    border-color: #22c8ff;
+}
+.messages-section-title {
+    font-size: 22px;
+    margin: 35px 0 18px;
+}
+.conversation-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 21px 23px;
+    margin-bottom: 13px;
+    border-radius: 15px;
+    background: #0d1c31;
+    border: 1px solid rgba(255,255,255,.08);
+    text-decoration: none;
+    color: white;
+    transition: .2s ease;
+}
+.conversation-card:hover {
+    border-color: #22c8ff;
+    transform: translateY(-2px);
+    background: #10243b;
+}
+.conversation-main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+}
+.conversation-avatar {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: rgba(34,200,255,.13);
+    color: #22c8ff;
+    font-size: 20px;
+    font-weight: 700;
+}
+.conversation-info {
+    min-width: 0;
+}
+.conversation-info h3 {
+    font-size: 16px;
+    margin: 0 0 7px;
+}
+.conversation-info p {
+    font-size: 13px;
+    color: #9fb4ca;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+.conversation-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 9px;
+    flex-shrink: 0;
+}
+.conversation-time {
+    font-size: 11px;
+    color: #8fa5bb;
+}
+.unread-pill {
+    background: #e94358;
+    color: white;
+    min-width: 23px;
+    height: 23px;
+    padding: 0 7px;
+    border-radius: 20px;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 700;
+}
+.conversation-arrow {
+    color: #22c8ff;
+    font-size: 21px;
+}
+.messages-empty {
+    text-align: center;
+    padding: 55px 25px;
+    background: #0d1c31;
+    border: 1px dashed rgba(34,200,255,.35);
+    border-radius: 18px;
+}
+.messages-empty h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.messages-empty p {
+    color: #aabbd0;
+}
+.messages-back {
+    display: inline-block;
+    margin-top: 30px;
+    color: #22c8ff;
+    text-decoration: none;
+    font-weight: 600;
+}
+@media(max-width:750px) {
+    .messages-page { padding: 35px 15px 60px; }
+    .messages-panel { padding: 19px; }
+    .messages-form { grid-template-columns: 1fr; }
+    .messages-form button { width: 100%; }
+    .conversation-card { padding: 16px; }
+    .conversation-avatar { width: 42px; height: 42px; }
+    .conversation-time { display: none; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="messages-page">
+<div class="messages-inner">
+
+    <div class="messages-header">
+        <div>
+            <span class="eyebrow">EDVANCE TECH COMMUNICATION CENTRE</span>
+            <h1>Messages</h1>
+            <p>Your private communication space for project updates and support.</p>
+        </div>
+        <div class="messages-count">
+            <strong>{{ unread_message_count }}</strong>
+            <span>Unread messages</span>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="project-dashboard-card">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="messages-panel">
+        <h2>Start a conversation</h2>
+        <form method="post" class="messages-form">
+            {% csrf_token %}
+            <div>
+                <label for="project_id">Select project</label>
+                <select name="project_id" id="project_id" required>
+                    <option value="">Choose a project</option>
+                    {% for project in available_projects %}
+                    <option value="{{ project.pk }}">
+                        {{ project.project_title }}
+                        {% if request.user.is_staff %} — {{ project.client.username }}{% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="subject">Conversation subject</label>
+                <input type="text" name="subject" id="subject"
+                       placeholder="e.g. Website development update" required>
+            </div>
+            <button class="btn btn-primary" type="submit">
+                Start conversation
+            </button>
+        </form>
+    </div>
+
+    <h2 class="messages-section-title">Your conversations</h2>
+
+    {% for conversation in conversations %}
+    <a href="{% url 'conversation_detail' conversation.pk %}"
+       class="conversation-card">
+        <div class="conversation-main">
+            <div class="conversation-avatar">E</div>
+            <div class="conversation-info">
+                <h3>{{ conversation.subject }}</h3>
+                <p>
+                    {{ conversation.project.project_title }}
+                    {% if request.user.is_staff %}
+                        · Client: {{ conversation.client.username }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <div class="conversation-meta">
+            <span class="conversation-time">
+                {{ conversation.updated_at|date:"d M Y, H:i" }}
+            </span>
+            {% if conversation.unread_count %}
+                <span class="unread-pill">{{ conversation.unread_count }}</span>
+            {% endif %}
+        </div>
+        <span class="conversation-arrow">›</span>
+    </a>
+    {% empty %}
+    <div class="messages-empty">
+        <h3>No conversations yet</h3>
+        <p>Start a conversation about one of your projects to contact EdVance Tech.</p>
+    </div>
+    {% endfor %}
+
+    <a class="messages-back" href="{% url 'client_dashboard' %}">
+        ← Return to dashboard
+    </a>
+</div>
+</section>
+{% endblock %}

@@ -1,0 +1,119 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Project Management | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.project-page{max-width:1300px;margin:auto;padding:45px 20px 80px;color:#fff}
+.project-heading{margin-bottom:28px}
+.project-heading span{color:#22c8ff;font-size:12px;letter-spacing:3px;font-weight:700}
+.project-heading h1{font-size:32px;margin:10px 0}
+.project-muted{color:#a9bbcf}
+.project-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:25px}
+.project-stat,.project-panel{background:#091a30;border:1px solid #203b55;border-radius:14px;padding:20px}
+.project-stat span{display:block;color:#a9bbcf;font-size:13px}
+.project-stat strong{display:block;font-size:27px;margin-top:8px}
+.project-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.project-filters input,.project-filters select{padding:12px;border:1px solid #29445f;border-radius:8px;background:#071426;color:#fff}
+.project-filters input{flex:1;min-width:200px}
+.project-button{display:inline-block;padding:12px 18px;border-radius:8px;background:#22c8ff;color:#061426;text-decoration:none;font-weight:700;border:0;cursor:pointer}
+.project-table-wrap{overflow-x:auto}
+.project-table{width:100%;border-collapse:collapse;min-width:900px}
+.project-table th,.project-table td{padding:14px;text-align:left;border-bottom:1px solid #203b55}
+.project-table th{color:#22c8ff;font-size:12px;text-transform:uppercase}
+.project-table td{color:#e6edf5}
+.project-table a{color:#22c8ff;text-decoration:none;font-weight:700}
+.project-status{font-weight:700}
+.project-pagination{display:flex;gap:15px;margin-top:20px}
+.project-pagination a{color:#22c8ff;text-decoration:none}
+.project-message{padding:12px 16px;background:#102f36;border:1px solid #24616b;border-radius:8px;margin-bottom:15px}
+@media(max-width:700px){.project-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.project-page{padding:30px 14px}}
+@media(max-width:430px){.project-stats{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="project-page">
+    <div class="project-heading">
+        <span>EDVANCE TECH BUSINESS MANAGEMENT</span>
+        <h1>Project Management</h1>
+        <p class="project-muted">Monitor client projects, requirements and delivery progress.</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="project-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="project-stats">
+        <div class="project-stat"><span>Total Projects</span><strong>{{ total_projects }}</strong></div>
+        <div class="project-stat"><span>Submitted</span><strong>{{ submitted_projects }}</strong></div>
+        <div class="project-stat"><span>Under Review</span><strong>{{ under_review_projects }}</strong></div>
+        <div class="project-stat"><span>Quotations Sent</span><strong>{{ quotation_sent_projects }}</strong></div>
+        <div class="project-stat"><span>In Progress</span><strong>{{ active_projects }}</strong></div>
+        <div class="project-stat"><span>Completed</span><strong>{{ completed_projects }}</strong></div>
+        <div class="project-stat"><span>Declined</span><strong>{{ declined_projects }}</strong></div>
+    </div>
+
+    <div class="project-panel">
+        <form method="get" class="project-filters">
+            <input type="search" name="q" value="{{ search }}"
+                   placeholder="Search project, client, business or service">
+
+            <select name="status">
+                <option value="all" {% if selected_status == "all" %}selected{% endif %}>All statuses</option>
+                {% for value,label in status_choices %}
+                    <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+
+            <button class="project-button" type="submit">Filter Projects</button>
+            <a class="project-button" href="{% url 'staff_dashboard' %}">Dashboard</a>
+        </form>
+
+        <div class="project-table-wrap">
+            <table class="project-table">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Project</th>
+                        <th>Client</th>
+                        <th>Service</th>
+                        <th>Budget</th>
+                        <th>Status</th>
+                        <th>Submitted</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in page_obj %}
+                    <tr>
+                        <td>{{ project.reference_number }}</td>
+                        <td>{{ project.project_title }}</td>
+                        <td>{{ project.client.get_full_name|default:project.client.username }}</td>
+                        <td>{{ project.get_service_display }}</td>
+                        <td>{{ project.get_budget_display }}</td>
+                        <td class="project-status">{{ project.get_status_display }}</td>
+                        <td>{{ project.created_at|date:"d M Y" }}</td>
+                        <td><a href="{% url 'staff_project_detail' project.id %}">Open project</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8">No projects found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="project-pagination">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ search|urlencode }}&status={{ selected_status }}&page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span class="project-muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?q={{ search|urlencode }}&status={{ selected_status }}&page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

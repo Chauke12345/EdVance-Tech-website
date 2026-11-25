@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Submit a Project | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.project-form-section {
+    padding: 75px 20px 90px;
+}
+.project-form-card {
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 42px;
+    background: linear-gradient(145deg, #091a30, #061326);
+    border: 1px solid rgba(34, 200, 255, .22);
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    box-sizing: border-box;
+}
+.project-form-heading {
+    text-align: center;
+    margin-bottom: 35px;
+}
+.project-form-heading .eyebrow {
+    color: #22c8ff;
+    letter-spacing: 3px;
+    font-size: 12px;
+    font-weight: 700;
+}
+.project-form-heading h1 {
+    margin: 14px 0;
+    font-size: clamp(28px, 4vw, 38px);
+}
+.project-form-heading p {
+    color: #b7c6d8;
+    line-height: 1.7;
+}
+.project-requirements-form {
+    display: flex;
+    flex-direction: column;
+    gap: 21px;
+}
+.project-requirements-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+.project-requirements-form label {
+    color: #eaf4ff;
+    font-size: 14px;
+    font-weight: 600;
+}
+.project-requirements-form input,
+.project-requirements-form select,
+.project-requirements-form textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    background: #030b18;
+    color: #fff;
+    border: 1px solid #29445f;
+    border-radius: 9px;
+    font: inherit;
+}
+.project-requirements-form textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+.project-requirements-form input:focus,
+.project-requirements-form select:focus,
+.project-requirements-form textarea:focus {
+    outline: none;
+    border-color: #22c8ff;
+    box-shadow: 0 0 0 3px rgba(34,200,255,.12);
+}
+.project-requirements-form input[type="file"] {
+    padding: 11px;
+}
+.project-requirements-form .helptext {
+    color: #91a8bf;
+    font-size: 12px;
+    line-height: 1.6;
+}
+.project-requirements-form .errorlist,
+.project-requirements-form .form-error {
+    color: #ff8c8c;
+    font-size: 13px;
+}
+.project-requirements-form button {
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+}
+.project-form-footer {
+    text-align: center;
+    margin-top: 25px;
+}
+.project-form-footer a {
+    color: #22c8ff;
+    text-decoration: none;
+}
+@media(max-width: 600px) {
+    .project-form-section { padding: 45px 15px 65px; }
+    .project-form-card { padding: 26px 19px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="project-form-section">
+    <div class="project-form-card">
+        <div class="project-form-heading">
+            <span class="eyebrow">CLIENT PORTAL</span>
+            <h1>Tell us about your project.</h1>
+            <p>Share your requirements and our team will review your request.</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data"
+              class="project-requirements-form">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="helptext">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+                {{ form.non_field_errors }}
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary">
+                Submit project request ?
+            </button>
+        </form>
+
+        <div class="project-form-footer">
+            <a href="{% url 'client_dashboard' %}">? Return to my dashboard</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

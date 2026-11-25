@@ -1,0 +1,109 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ quotation.reference_number }} | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.quote-detail{max-width:1050px;margin:auto;padding:45px 20px 80px;color:#fff}
+.quote-detail-card{background:#091a30;border:1px solid #203b55;border-radius:15px;padding:25px;margin-bottom:22px}
+.quote-detail h1{font-size:30px;margin:8px 0}
+.quote-detail h2{font-size:20px;color:#22c8ff}
+.quote-detail p{color:#cbd8e6;line-height:1.8}
+.quote-label{color:#91a9c1;font-size:12px;text-transform:uppercase}
+.quote-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.quote-financial{background:#10243b;padding:18px;border-radius:10px}
+.quote-financial strong{display:block;font-size:21px;margin-top:8px}
+.quote-form label{display:block;color:#a9bbcf;margin:16px 0 8px}
+.quote-form input,.quote-form select,.quote-form textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid #29445f;border-radius:8px;background:#071426;color:#fff}
+.quote-button{display:inline-block;padding:12px 18px;border:0;border-radius:8px;background:#22c8ff;color:#061426;text-decoration:none;font-weight:700;cursor:pointer;margin-top:18px}
+.quote-send{background:#4ade80}
+.quote-secondary{color:#22c8ff;text-decoration:none;margin-left:12px}
+.quote-message{padding:12px 16px;background:#102f36;border:1px solid #24616b;border-radius:8px;margin-bottom:15px}
+.quote-errors{color:#ff9b9b}
+@media(max-width:650px){.quote-grid{grid-template-columns:1fr}.quote-detail{padding:30px 14px}}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="quote-detail">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="quote-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="quote-detail-card">
+        <span class="quote-label">Quotation Reference</span>
+        <h1>{{ quotation.reference_number }}</h1>
+        <p>
+            <strong>Client:</strong>
+            {{ quotation.project.client.get_full_name|default:quotation.project.client.username }}<br>
+            <strong>Email:</strong> {{ quotation.project.client.email|default:"Not provided" }}<br>
+            <strong>Project:</strong> {{ quotation.project.project_title }}<br>
+            <strong>Status:</strong> {{ quotation.get_status_display }}<br>
+            <strong>Created:</strong> {{ quotation.created_at|date:"d F Y, H:i" }}<br>
+            <strong>Valid until:</strong> {{ quotation.valid_until|date:"d F Y"|default:"Not specified" }}
+        </p>
+
+        <div class="quote-grid">
+            <div class="quote-financial">
+                <span class="quote-label">Total quotation</span>
+                <strong>R {{ quotation.total_amount|floatformat:2 }}</strong>
+            </div>
+            <div class="quote-financial">
+                <span class="quote-label">{{ quotation.deposit_percentage|floatformat:2 }}% deposit</span>
+                <strong>R {{ quotation.deposit_amount|floatformat:2 }}</strong>
+            </div>
+            <div class="quote-financial">
+                <span class="quote-label">Remaining balance</span>
+                <strong>R {{ quotation.balance_amount|floatformat:2 }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="quote-detail-card">
+        <h2>Scope of Work</h2>
+        <p>{{ quotation.scope_of_work|linebreaksbr }}</p>
+
+        <h2>Terms and Conditions</h2>
+        {% if quotation.terms_and_conditions %}
+            <p>{{ quotation.terms_and_conditions|linebreaksbr }}</p>
+        {% else %}
+            <p>No additional terms specified.</p>
+        {% endif %}
+    </div>
+
+    {% if quotation.status == "Draft" %}
+        <div class="quote-detail-card">
+            <h2>Edit Draft Quotation</h2>
+            <form method="post" class="quote-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="save">
+
+                {% for field in form %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <div class="quote-errors">{{ error }}</div>
+                    {% endfor %}
+                {% endfor %}
+
+                <button class="quote-button" type="submit">Save Changes</button>
+            </form>
+
+            <form method="post" onsubmit="return confirm('Send this quotation to the client portal?');">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="send">
+                <button class="quote-button quote-send" type="submit">Send to Client</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="quote-detail-card">
+            <h2>Quotation Status</h2>
+            <p>This quotation is no longer a draft and cannot be edited through this page.</p>
+        </div>
+    {% endif %}
+
+    <a class="quote-secondary" href="{% url 'staff_quotation_list' %}">← Back to quotation register</a>
+</section>
+{% endblock %}

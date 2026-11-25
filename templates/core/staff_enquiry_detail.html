@@ -1,0 +1,67 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Enquiry Details | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.enquiry-detail {
+    max-width: 850px; margin: auto; padding: 45px 20px 80px; color: #fff;
+}
+.enquiry-detail-card {
+    margin-top: 22px; padding: 28px; background: #091a30;
+    border: 1px solid #203b55; border-radius: 14px;
+}
+.enquiry-detail h1 { margin-bottom: 8px; }
+.enquiry-detail h2 { color: #22c8ff; font-size: 17px; }
+.enquiry-detail p { color: #dce8f4; line-height: 1.7; overflow-wrap: anywhere; }
+.enquiry-detail .muted { color: #a9bbcf; }
+.enquiry-detail .message {
+    white-space: pre-wrap; background: #10243d; padding: 18px; border-radius: 9px;
+}
+.enquiry-detail a, .enquiry-detail button {
+    display: inline-block; margin: 8px 8px 0 0; padding: 11px 16px;
+    border-radius: 8px; border: 1px solid #22c8ff;
+    background: #102b45; color: #fff; text-decoration: none; cursor: pointer;
+}
+.enquiry-detail button { font: inherit; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="enquiry-detail">
+    <p class="muted">EDVANCE TECH / CLIENT ENQUIRIES</p>
+    <h1>Enquiry from {{ enquiry.name }}</h1>
+    <p class="muted">Received {{ enquiry.created_at|date:"d F Y, H:i" }}</p>
+
+    <div class="enquiry-detail-card">
+        <h2>Client contact details</h2>
+        <p><strong>Name:</strong> {{ enquiry.name }}</p>
+        <p><strong>Email:</strong> <a href="mailto:{{ enquiry.email }}">{{ enquiry.email }}</a></p>
+        <p><strong>Phone:</strong>
+            {% if enquiry.phone %}
+                <a href="tel:{{ enquiry.phone }}">{{ enquiry.phone }}</a>
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+
+        <h2>Requested service</h2>
+        <p>{{ enquiry.get_service_display }}</p>
+
+        <h2>Enquiry message</h2>
+        <div class="message">{{ enquiry.message }}</div>
+
+        <h2>Review status</h2>
+        <p>{% if enquiry.is_reviewed %}Reviewed{% else %}New — awaiting review{% endif %}</p>
+
+        <form method="post" action="{% url 'staff_enquiry_review' enquiry.id %}">
+            {% csrf_token %}
+            <button type="submit">
+                {% if enquiry.is_reviewed %}Return to New{% else %}Mark as Reviewed{% endif %}
+            </button>
+        </form>
+
+        <a href="{% url 'staff_enquiry_list' %}">← Back to all enquiries</a>
+    </div>
+</section>
+{% endblock %}

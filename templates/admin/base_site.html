@@ -1,0 +1,17 @@
+﻿{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}EdVance Tech Control Centre{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <img src="{% static 'images/EdVance-Mark.png' %}"
+             alt="EdVance Tech"
+             style="height:38px; vertical-align:middle; margin-right:12px;">
+        EdVance Tech Control Centre
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

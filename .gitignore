@@ -1,0 +1,60 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+media/
+
+# Secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Local settings backups
+config/settings_before_railway_*.py
+
+# Project backups - preserve locally, exclude from Git
+client_management_backup_20261124/
+project_management_backup_20261124/
+quotation_management_backup_20261124/
+staff_enquiry_backup_20261124_212708/
+
+# Temporary inspection and repair scripts
+inspect_imports.py
+inspect_characters.py
+verify_encoding.py
+convert_injabulo_logo.py
+fix_base_encoding.py
+fix_final_home_character.py
+fix_home_encoding.py
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local database backups
+*.sqlite3
+*.sqlite3-journal
+*_backup_*.db
+
+# Settings backups
+config/settings_before_*.py
+
+# Temporary source-code backups
+core/*_before_*.py
+portfolio/*_before_*.py
+
+# Temporary template backups
+templates/*.before_*
+templates/**/*before*.html
+
+templates/**/*.before_*

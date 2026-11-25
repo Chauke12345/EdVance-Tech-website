@@ -1,0 +1,329 @@
+﻿{% extends "base.html" %}
+{% block title %}My Client Dashboard | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.client-dashboard {
+    padding: 65px 20px 90px;
+}
+.dashboard-inner {
+    max-width: 1120px;
+    margin: auto;
+}
+.dashboard-welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 35px;
+}
+.dashboard-welcome .eyebrow {
+    color: #22c8ff;
+    letter-spacing: 3px;
+    font-size: 12px;
+    font-weight: 700;
+}
+.dashboard-welcome h1 {
+    margin: 12px 0;
+    font-size: clamp(27px, 4vw, 38px);
+}
+.dashboard-welcome p {
+    color: #a9bbcf;
+}
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin: 35px 0 55px;
+}
+.dashboard-stat {
+    padding: 23px;
+    background: linear-gradient(145deg, #0c2038, #071426);
+    border: 1px solid rgba(34,200,255,.16);
+    border-radius: 14px;
+}
+.dashboard-stat span {
+    display: block;
+    color: #a9bbcf;
+    font-size: 13px;
+    margin-bottom: 13px;
+}
+.dashboard-stat strong {
+    display: block;
+    font-size: 32px;
+    color: #fff;
+}
+.dashboard-stat small {
+    color: #22c8ff;
+    font-size: 12px;
+}
+.dashboard-section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+.dashboard-section-title h2 {
+    margin: 0;
+    font-size: 23px;
+}
+.project-dashboard-card {
+    padding: 25px;
+    margin-bottom: 18px;
+    background: #091a30;
+    border: 1px solid #203b55;
+    border-radius: 15px;
+}
+.project-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+.project-card-top h3 {
+    margin: 0 0 8px;
+    font-size: 20px;
+}
+.project-reference {
+    color: #22c8ff;
+    font-size: 12px;
+    letter-spacing: .5px;
+}
+.project-status {
+    display: inline-block;
+    padding: 8px 13px;
+    border-radius: 30px;
+    background: rgba(34,200,255,.12);
+    color: #55d6ff;
+    font-size: 12px;
+    font-weight: 700;
+}
+.project-status[data-status="Completed"] {
+    background: rgba(54,201,143,.13);
+    color: #55dba7;
+}
+.project-status[data-status="Declined"] {
+    background: rgba(255,100,100,.12);
+    color: #ff9999;
+}
+.project-status[data-status="In progress"] {
+    background: rgba(229,173,69,.13);
+    color: #f2c66e;
+}
+.project-details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #203b55;
+}
+.project-detail span {
+    display: block;
+    color: #91a8bf;
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+.project-detail strong {
+    color: #f0f6ff;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+.project-empty {
+    padding: 45px 25px;
+    text-align: center;
+    background: #091a30;
+    border: 1px dashed #29445f;
+    border-radius: 15px;
+}
+.project-empty h3 {
+    margin-top: 0;
+}
+.project-empty p {
+    color: #a9bbcf;
+}
+.dashboard-logout {
+    margin-top: 35px;
+}
+@media(max-width: 850px) {
+    .dashboard-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media(max-width: 550px) {
+    .client-dashboard {
+        padding: 45px 15px 65px;
+    }
+    .dashboard-stats {
+        gap: 11px;
+    }
+    .dashboard-stat {
+        padding: 17px;
+    }
+    .dashboard-stat strong {
+        font-size: 26px;
+    }
+    .project-dashboard-card {
+        padding: 19px;
+    }
+    .project-details-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="client-dashboard">
+    <div class="dashboard-inner">
+
+        <div class="dashboard-welcome">
+            <div>
+                <span class="eyebrow">EDVANCE TECH CLIENT WORKSPACE</span>
+                <h1>Welcome, {{ request.user.first_name|default:request.user.username }}.</h1>
+                <p>Keep track of your projects and work with our team.</p>
+            </div>
+            <a href="{% url 'my_quotations' %}" class="btn btn-primary" style="margin-right:12px;">My Quotations</a>
+            <a href="{% url 'project_submit' %}" class="btn btn-primary">
+                + Submit New Project
+            </a>
+        </div>
+
+        <div class="dashboard-stats">
+            <div class="dashboard-stat">
+                <span>Total Projects</span>
+                <strong>{{ total_projects }}</strong>
+                <small>All your requests</small>
+            </div>
+            <div class="dashboard-stat">
+                <span>Awaiting Review</span>
+                <strong>{{ awaiting_review }}</strong>
+                <small>Submitted or under review</small>
+            </div>
+            <div class="dashboard-stat">
+                <span>In Progress</span>
+                <strong>{{ in_progress }}</strong>
+                <small>Currently being developed</small>
+            </div>
+            <div class="dashboard-stat">
+                <span>Completed</span>
+                <strong>{{ completed_projects }}</strong>
+                <small>Finished projects</small>
+            </div>
+        </div>
+
+        <div class="dashboard-section-title">
+            <h2>My Contracts</h2>
+            <a href="{% url 'contract_list' %}" class="btn btn-primary">
+                View All Contracts →
+            </a>
+        </div>
+
+        {% if contracts %}
+            {% for contract in contracts %}
+                <div class="project-dashboard-card">
+                    <div class="project-card-top">
+                        <div>
+                            <h3>{{ contract.title }}</h3>
+                            <span class="project-reference">
+                                {{ contract.reference_number }}
+                            </span>
+                        </div>
+                        <span class="project-status"
+                              data-status="{{ contract.status }}">
+                            {{ contract.get_status_display }}
+                        </span>
+                    </div>
+
+                    <div class="project-details-grid">
+                        <div class="project-detail">
+                            <span>Project</span>
+                            <strong>{{ contract.project.project_title }}</strong>
+                        </div>
+                        <div class="project-detail">
+                            <span>Contract date</span>
+                            <strong>{{ contract.created_at|date:"d M Y" }}</strong>
+                        </div>
+                        <div class="project-detail">
+                            <span>Valid until</span>
+                            <strong>{{ contract.valid_until|date:"d M Y"|default:"Not specified" }}</strong>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'contract_detail' contract.id %}"
+                       class="btn btn-primary"
+                       style="display:inline-block;margin-top:20px;">
+                        Review Contract →
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="project-empty">
+                <h3>No contracts available yet</h3>
+                <p>Your agreements will appear here when EdVance Tech issues them.</p>
+            </div>
+        {% endif %}
+        <div class="dashboard-section-title">
+            <h2>My Project Requests</h2>
+        </div>
+
+        {% for project in projects %}
+            <div class="project-dashboard-card">
+                <div class="project-card-top">
+                    <div>
+                        <h3>{{ project.project_title }}</h3>
+                        <span class="project-reference">
+                            {{ project.reference_number }}
+                        </span>
+                    </div>
+                    <span class="project-status"
+                          data-status="{{ project.status }}">
+                        {{ project.get_status_display }}
+                    </span>
+                </div>
+
+                <div class="project-details-grid">
+                    <div class="project-detail">
+                        <span>Service</span>
+                        <strong>{{ project.get_service_display }}</strong>
+                    </div>
+                    <div class="project-detail">
+                        <span>Budget</span>
+                        <strong>{{ project.get_budget_display }}</strong>
+                    </div>
+                    <div class="project-detail">
+                        <span>Date submitted</span>
+                        <strong>{{ project.created_at|date:"d M Y" }}</strong>
+                    </div>
+                    <div class="project-detail">
+                        <span>Preferred completion</span>
+                        <strong>{{ project.preferred_completion_date|date:"d M Y"|default:"Not specified" }}</strong>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="project-empty">
+                <h3>No projects submitted yet</h3>
+                <p>Your project requests will appear here once submitted.</p>
+                <a href="{% url 'my_quotations' %}" class="btn btn-primary" style="margin-right:12px;">My Quotations</a>
+            <a href="{% url 'project_submit' %}" class="btn btn-primary">
+                    Submit Your First Project ?
+                </a>
+            </div>
+        {% endfor %}
+
+        <div class="dashboard-logout">
+            <form method="post" action="{% url 'client_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Log out</button>
+            </form>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+

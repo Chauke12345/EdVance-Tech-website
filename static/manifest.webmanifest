@@ -1,0 +1,19 @@
+{
+    "id": "/",
+    "name": "EdVance Tech",
+    "short_name": "EdVance",
+    "description": "EdVance Tech - Digital Solutions",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#030b18",
+    "theme_color": "#030b18",
+    "icons": [
+        {
+            "src": "/static/images/EdVance-Mark.png",
+            "sizes": "any",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}

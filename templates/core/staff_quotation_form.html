@@ -1,0 +1,44 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ page_heading }} | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.quote-form-page{max-width:900px;margin:auto;padding:45px 20px 80px;color:#fff}
+.quote-form-card{background:#091a30;border:1px solid #203b55;border-radius:15px;padding:28px}
+.quote-form-card h1{margin-top:0}
+.quote-form-card label{display:block;color:#a9bbcf;margin:18px 0 8px}
+.quote-form-card input,.quote-form-card select,.quote-form-card textarea{width:100%;box-sizing:border-box;padding:13px;border:1px solid #29445f;border-radius:8px;background:#071426;color:#fff}
+.quote-form-card textarea{resize:vertical}
+.quote-form-card .helptext{color:#a9bbcf;font-size:12px}
+.quote-errors{color:#ff9b9b;margin-top:6px}
+.quote-button{display:inline-block;padding:12px 18px;border:0;border-radius:8px;background:#22c8ff;color:#061426;text-decoration:none;font-weight:700;cursor:pointer;margin-top:20px}
+.quote-secondary{margin-left:10px;color:#22c8ff;text-decoration:none}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="quote-form-page">
+    <div class="quote-form-card">
+        <h1>{{ page_heading }}</h1>
+        <p style="color:#a9bbcf">Complete the details below. The quotation will be saved as a draft.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+                {% for error in field.errors %}<div class="quote-errors">{{ error }}</div>{% endfor %}
+            {% endfor %}
+
+            {% for error in form.non_field_errors %}
+                <div class="quote-errors">{{ error }}</div>
+            {% endfor %}
+
+            <button class="quote-button" type="submit">Save Draft Quotation</button>
+            <a class="quote-secondary" href="{% url 'staff_quotation_list' %}">Cancel</a>
+        </form>
+    </div>
+</section>
+{% endblock %}

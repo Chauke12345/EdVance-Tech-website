@@ -1,0 +1,38 @@
+﻿{% extends "base.html" %}
+
+{% block title %}My Contracts | EdVance Tech{% endblock %}
+
+{% block content %}
+<section class="contracts-page" style="max-width:1100px;margin:50px auto;padding:20px;">
+    <div style="margin-bottom:30px;">
+        <p style="color:#078cff;font-weight:700;letter-spacing:2px;">EDVANCE TECH CLIENT PORTAL</p>
+        <h1 style="color:#fff;">My Contracts</h1>
+        <p style="color:#aebbd0;">Review and manage your project agreements securely.</p>
+    </div>
+
+    {% if contracts %}
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
+            {% for contract in contracts %}
+                <div style="background:#0b1930;border:1px solid #1d3655;border-radius:14px;padding:24px;">
+                    <p style="color:#22c8ff;font-size:13px;">{{ contract.reference_number }}</p>
+                    <h2 style="color:#fff;font-size:20px;">{{ contract.title }}</h2>
+                    <p style="color:#aebbd0;">Project: {{ contract.project.project_title }}</p>
+                    <p style="color:#aebbd0;">Status: <strong>{{ contract.get_status_display }}</strong></p>
+                    {% if contract.valid_until %}
+                        <p style="color:#aebbd0;">Valid until: {{ contract.valid_until|date:"d M Y" }}</p>
+                    {% endif %}
+                    <a href="{% url 'contract_detail' contract.id %}"
+                       style="display:inline-block;margin-top:15px;background:#078cff;color:white;padding:11px 20px;border-radius:7px;text-decoration:none;font-weight:600;">
+                        View Contract →
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="background:#0b1930;border:1px solid #1d3655;border-radius:14px;padding:35px;text-align:center;">
+            <h2 style="color:#fff;">No contracts yet</h2>
+            <p style="color:#aebbd0;">Your contracts will appear here when EdVance Tech issues an agreement for your project.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

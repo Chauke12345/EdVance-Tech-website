@@ -1,0 +1,119 @@
+﻿{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ project.name }} | EdVance Tech{% endblock %}
+{% block meta_description %}{{ project.description }} Learn about the problem solved, features and technology behind {{ project.name }}.{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <p class="breadcrumb">
+            <a href="/">Home</a> /
+            <a href="/projects/">Projects</a> /
+            {{ project.name }}
+        </p>
+
+        <p class="eyebrow">{{ project.category }}</p>
+        <h1>{{ project.name }}</h1>
+        <p class="lead">{{ project.description }}</p>
+
+        <div class="detail-actions">
+            {% if project.live_url %}
+            <a class="btn btn-primary" href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer">
+                Visit live application
+            </a>
+            {% endif %}
+            <a class="btn btn-outline" href="/contact/?project={{ project.slug }}">
+                Discuss a similar project
+            </a>
+            <a class="btn btn-outline" href="/projects/">
+                Back to projects
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <article class="content-card">
+            <p class="eyebrow">01 / Project overview</p>
+            <h2>About this solution</h2>
+            <p>{{ project.description }}</p>
+        </article>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container content-grid">
+        <article class="content-card">
+            <p class="eyebrow">02 / The challenge</p>
+            <h2>The problem it solves</h2>
+            <p>{{ project.problem }}</p>
+        </article>
+
+        <article class="content-card">
+            <p class="eyebrow">03 / Our approach</p>
+            <h2>Our solution</h2>
+            <p>{{ project.solution }}</p>
+        </article>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container content-grid">
+        <article class="content-card">
+            <p class="eyebrow">04 / Application capabilities</p>
+            <h2>Key features</h2>
+            <ul>
+                {% for feature in project.features %}
+                <li>{{ feature }}</li>
+                {% endfor %}
+            </ul>
+        </article>
+
+        <article class="content-card">
+            <p class="eyebrow">05 / Development stack</p>
+            <h2>Technology used</h2>
+            <p>
+                The tools and technologies used to build and deploy this solution:
+            </p>
+            <ul>
+                {% for technology in project.technology %}
+                <li>{{ technology }}</li>
+                {% endfor %}
+            </ul>
+            {% if project.technology_note %}
+            <p><small>{{ project.technology_note }}</small></p>
+            {% endif %}
+        </article>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <article class="content-card">
+            <p class="eyebrow">06 / Business impact</p>
+            <h2>Value delivered</h2>
+            <p>{{ project.business_value }}</p>
+        </article>
+    </div>
+</section>
+
+<section class="section-tight">
+    <div class="container">
+        <div class="cta">
+            <div>
+                <p class="eyebrow">Have a similar challenge?</p>
+                <h2>Let's build a solution for your business.</h2>
+                <p>
+                    Work with EdVance Tech to turn your idea or operational
+                    challenge into a practical digital product.
+                </p>
+            </div>
+            <a class="btn btn-primary" href="/contact/?project={{ project.slug }}">
+                Request a quote
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

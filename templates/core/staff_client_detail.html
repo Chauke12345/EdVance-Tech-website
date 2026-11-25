@@ -1,0 +1,137 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Client Profile | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.profile-page {max-width:1150px;margin:auto;padding:45px 20px 80px;color:#fff}
+.profile-heading {margin-bottom:25px}
+.profile-heading span {color:#22c8ff;font-size:12px;letter-spacing:3px;font-weight:700}
+.profile-heading h1 {font-size:32px;margin:10px 0}
+.profile-heading p,.profile-muted {color:#a9bbcf}
+.profile-card {background:#091a30;border:1px solid #203b55;border-radius:14px;padding:23px;margin-bottom:25px}
+.profile-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.profile-field small {display:block;color:#8fa8c0;margin-bottom:6px}
+.profile-field strong {overflow-wrap:anywhere}
+.profile-section h2 {font-size:21px;margin-bottom:15px}
+.profile-table-wrap {overflow-x:auto}
+.profile-table {width:100%;border-collapse:collapse;min-width:650px}
+.profile-table th,.profile-table td {padding:13px;text-align:left;border-bottom:1px solid #203b55}
+.profile-table th {color:#22c8ff;font-size:12px;text-transform:uppercase}
+.profile-table td {color:#e6edf5}
+.profile-button {display:inline-block;padding:11px 17px;background:#22c8ff;color:#061426;border-radius:8px;text-decoration:none;font-weight:700}
+@media(max-width:600px){.profile-grid{grid-template-columns:1fr}.profile-page{padding:30px 14px}}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="profile-page">
+    <div class="profile-heading">
+        <span>CLIENT ACCOUNT MANAGEMENT</span>
+        <h1>{{ client.get_full_name|default:client.username }}</h1>
+        <p>Client profile, project history and quotations.</p>
+        <a class="profile-button" href="{% url 'staff_client_list' %}">Back to clients</a>
+    </div>
+
+    <div class="profile-card">
+        <div class="profile-grid">
+            <div class="profile-field">
+                <small>Full name</small>
+                <strong>{{ client.get_full_name|default:"Not provided" }}</strong>
+            </div>
+            <div class="profile-field">
+                <small>Username</small>
+                <strong>{{ client.username }}</strong>
+            </div>
+            <div class="profile-field">
+                <small>Email address</small>
+                <strong>{{ client.email|default:"Not provided" }}</strong>
+            </div>
+            <div class="profile-field">
+                <small>Account status</small>
+                <strong>{% if client.is_active %}Active{% else %}Inactive{% endif %}</strong>
+            </div>
+            <div class="profile-field">
+                <small>Registration date</small>
+                <strong>{{ client.date_joined|date:"d F Y, H:i" }}</strong>
+            </div>
+            <div class="profile-field">
+                <small>Last login</small>
+                <strong>{{ client.last_login|date:"d F Y, H:i"|default:"Never logged in" }}</strong>
+            </div>
+            <div class="profile-field">
+                <small>Total projects</small>
+                <strong>{{ total_projects }}</strong>
+            </div>
+            <div class="profile-field">
+                <small>Total quotations</small>
+                <strong>{{ total_quotations }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-card profile-section">
+        <h2>Project History</h2>
+        <div class="profile-table-wrap">
+            <table class="profile-table">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Project</th>
+                        <th>Service</th>
+                        <th>Status</th>
+                        <th>Submitted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+                        <td>{{ project.reference_number }}</td>
+                        <td>{{ project.project_title }}</td>
+                        <td>{{ project.service }}</td>
+                        <td>{{ project.status }}</td>
+                        <td>{{ project.created_at|date:"d M Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5">This client has not submitted any projects yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="profile-card profile-section">
+        <h2>Client Quotations</h2>
+        <div class="profile-table-wrap">
+            <table class="profile-table">
+                <thead>
+                    <tr>
+                        <th>Quotation</th>
+                        <th>Project</th>
+                        <th>Total</th>
+                        <th>Deposit</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                        <th>Valid until</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quotation in quotations %}
+                    <tr>
+                        <td>{{ quotation.reference_number }}</td>
+                        <td>{{ quotation.project.project_title }}</td>
+                        <td>R {{ quotation.total_amount|floatformat:2 }}</td>
+                        <td>R {{ quotation.deposit_amount|floatformat:2 }}</td>
+                        <td>R {{ quotation.balance_amount|floatformat:2 }}</td>
+                        <td>{{ quotation.get_status_display }}</td>
+                        <td>{{ quotation.valid_until|date:"d M Y"|default:"Not specified" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7">No quotations have been created for this client.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

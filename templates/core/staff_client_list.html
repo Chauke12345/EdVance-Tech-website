@@ -1,0 +1,116 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Client Accounts | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.client-page {max-width:1200px;margin:auto;padding:45px 20px 80px;color:#fff}
+.client-heading {margin-bottom:28px}
+.client-heading span {color:#22c8ff;font-size:12px;letter-spacing:3px;font-weight:700}
+.client-heading h1 {font-size:34px;margin:10px 0}
+.client-heading p,.muted {color:#a9bbcf}
+.client-stats {display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:25px}
+.client-stat,.client-panel {background:#091a30;border:1px solid #203b55;border-radius:14px;padding:20px}
+.client-stat span {display:block;color:#a9bbcf;font-size:13px}
+.client-stat strong {display:block;font-size:28px;margin-top:8px}
+.client-search {display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.client-search input,.client-search select {padding:12px;border-radius:8px;border:1px solid #29445f;background:#071426;color:#fff}
+.client-search input {flex:1;min-width:200px}
+.client-search button,.client-button {padding:12px 18px;border:0;border-radius:8px;background:#22c8ff;color:#061426;font-weight:700;text-decoration:none;cursor:pointer}
+.client-table-wrap {overflow-x:auto}
+.client-table {width:100%;border-collapse:collapse;min-width:650px}
+.client-table th,.client-table td {padding:14px;text-align:left;border-bottom:1px solid #203b55}
+.client-table th {color:#22c8ff;font-size:12px;text-transform:uppercase}
+.client-table td {color:#e6edf5}
+.client-table a {color:#22c8ff;text-decoration:none;font-weight:700}
+.status-active {color:#5ee0a0}
+.status-inactive {color:#ff9b9b}
+.pagination {display:flex;gap:15px;align-items:center;margin-top:20px}
+.pagination a {color:#22c8ff;text-decoration:none}
+@media(max-width:650px){.client-stats{grid-template-columns:1fr}.client-page{padding:30px 14px}}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="client-page">
+    <div class="client-heading">
+        <span>EDVANCE TECH BUSINESS MANAGEMENT</span>
+        <h1>Client Accounts</h1>
+        <p>Search, view and review registered client accounts.</p>
+    </div>
+
+    <div class="client-stats">
+        <div class="client-stat">
+            <span>Total Clients</span>
+            <strong>{{ total_clients }}</strong>
+        </div>
+        <div class="client-stat">
+            <span>Active Accounts</span>
+            <strong>{{ active_clients }}</strong>
+        </div>
+        <div class="client-stat">
+            <span>Inactive Accounts</span>
+            <strong>{{ inactive_clients }}</strong>
+        </div>
+    </div>
+
+    <div class="client-panel">
+        <form method="get" class="client-search">
+            <input type="search" name="q" value="{{ search }}"
+                   placeholder="Search name, username or email">
+            <select name="status">
+                <option value="all" {% if selected_status == "all" %}selected{% endif %}>All accounts</option>
+                <option value="active" {% if selected_status == "active" %}selected{% endif %}>Active</option>
+                <option value="inactive" {% if selected_status == "inactive" %}selected{% endif %}>Inactive</option>
+            </select>
+            <button type="submit">Search</button>
+            <a class="client-button" href="{% url 'staff_dashboard' %}">Dashboard</a>
+        </form>
+
+        <div class="client-table-wrap">
+            <table class="client-table">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Registered</th>
+                        <th>Account</th>
+                        <th>Profile</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in page_obj %}
+                    <tr>
+                        <td>{{ client.get_full_name|default:client.username }}</td>
+                        <td>{{ client.username }}</td>
+                        <td>{{ client.email|default:"Not provided" }}</td>
+                        <td>{{ client.date_joined|date:"d M Y" }}</td>
+                        <td>
+                            {% if client.is_active %}
+                                <span class="status-active">Active</span>
+                            {% else %}
+                                <span class="status-inactive">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td><a href="{% url 'staff_client_detail' client.id %}">View profile</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6">No client accounts found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ search|urlencode }}&status={{ selected_status }}&page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span class="muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?q={{ search|urlencode }}&status={{ selected_status }}&page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

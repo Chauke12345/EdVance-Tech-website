@@ -1,0 +1,231 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Staff Dashboard | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.staff-dashboard {
+    max-width: 1200px;
+    margin: auto;
+    padding: 55px 20px 90px;
+}
+
+.staff-heading {
+    margin-bottom: 35px;
+}
+
+.staff-heading span {
+    color: #22c8ff;
+    font-size: 12px;
+    letter-spacing: 3px;
+    font-weight: 700;
+}
+
+.staff-heading h1 {
+    color: #fff;
+    margin: 12px 0;
+    font-size: clamp(28px, 4vw, 38px);
+}
+
+.staff-heading p {
+    color: #a9bbcf;
+}
+
+.staff-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.staff-stat {
+    padding: 25px;
+    background: linear-gradient(145deg, #10243d, #071426);
+    border: 1px solid rgba(34, 200, 255, .2);
+    border-radius: 15px;
+}
+
+.staff-stat span {
+    display: block;
+    color: #a9bbcf;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.staff-stat strong {
+    color: #fff;
+    font-size: 32px;
+}
+
+.staff-stat small {
+    display: block;
+    color: #22c8ff;
+    margin-top: 8px;
+}
+
+.staff-section {
+    margin-top: 40px;
+}
+
+.staff-section h2 {
+    color: #fff;
+    font-size: 22px;
+    margin-bottom: 18px;
+}
+
+.staff-shortcut-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.staff-shortcut {
+    display: block;
+    padding: 22px;
+    background: #091a30;
+    border: 1px solid #203b55;
+    border-radius: 13px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.staff-shortcut strong {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.staff-shortcut p {
+    color: #a9bbcf;
+    font-size: 13px;
+    margin: 0;
+}
+
+.staff-shortcut:hover {
+    border-color: #22c8ff;
+}
+
+@media(max-width: 750px) {
+    .staff-stat-grid,
+    .staff-shortcut-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media(max-width: 480px) {
+    .staff-stat-grid,
+    .staff-shortcut-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .staff-dashboard {
+        padding: 35px 15px 60px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="staff-dashboard">
+
+    <div class="staff-heading">
+        <span>EDVANCE TECH BUSINESS MANAGEMENT</span>
+        <h1>Staff Dashboard</h1>
+        <p>Welcome, {{ request.user.first_name|default:request.user.username }}.
+        Manage your clients, enquiries and projects from one place.</p>
+    </div>
+
+    <div class="staff-stat-grid">
+
+        <div class="staff-stat">
+            <span>Total Clients</span>
+            <strong>{{ total_clients }}</strong>
+            <small>Registered non-staff accounts</small>
+        </div>
+
+        <div class="staff-stat">
+            <span>New Enquiries</span>
+            <strong>{{ new_enquiries }}</strong>
+            <small>Awaiting review</small>
+        </div>
+
+        <div class="staff-stat">
+            <span>Total Enquiries</span>
+            <strong>{{ total_enquiries }}</strong>
+            <small>All website enquiries</small>
+        </div>
+
+        <div class="staff-stat">
+            <span>Total Projects</span>
+            <strong>{{ total_projects }}</strong>
+            <small>Client project requests</small>
+        </div>
+
+        <div class="staff-stat">
+            <span>Active Projects</span>
+            <strong>{{ active_projects }}</strong>
+            <small>Currently in progress</small>
+        </div>
+
+        <div class="staff-stat">
+            <span>Projects Awaiting Review</span>
+            <strong>{{ pending_projects }}</strong>
+            <small>Submitted or under review</small>
+        </div>
+
+        <div class="staff-stat">
+            <span>Pending Quotations</span>
+            <strong>{{ pending_quotations }}</strong>
+            <small>Sent to clients</small>
+        </div>
+
+        <div class="staff-stat">
+            <span>Pending Contracts</span>
+            <strong>{{ pending_contracts }}</strong>
+            <small>Awaiting client signature</small>
+        </div>
+
+    </div>
+
+    <div class="staff-section">
+        <h2>Management Shortcuts</h2>
+
+        <div class="staff-shortcut-grid">
+
+            <a class="staff-shortcut" href="{% url 'staff_enquiry_list' %}">
+                <strong>Client Enquiries</strong>
+                <p>Review and manage website enquiries.</p>
+            </a>
+
+            <a class="staff-shortcut" href="{% url 'staff_client_list' %}">
+                <strong>Client Accounts</strong>
+                <p>View registered accounts and manage access.</p>
+            </a>
+
+            <a class="staff-shortcut" href="{% url 'staff_project_list' %}">
+                <strong>Project Management</strong>
+                <p>Review project requirements and update statuses.</p>
+            </a>
+
+            <a class="staff-shortcut" href="{% url 'staff_quotation_list' %}">
+                <strong>Quotations</strong>
+                <p>Create and manage client quotations.</p>
+            </a>
+
+            <a class="staff-shortcut" href="/admin/contracts/contract/">
+                <strong>Contracts</strong>
+                <p>Manage issued contracts and signing status.</p>
+            </a>
+
+            <a class="staff-shortcut" href="/portal/messages/">
+                <strong>Client Messages</strong>
+                <p>Communicate with clients about their projects.</p>
+            </a>
+
+        </div>
+    </div>
+
+</section>
+{% endblock %}
+
+
+
+

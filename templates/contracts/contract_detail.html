@@ -1,0 +1,96 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ contract.title }} | EdVance Tech{% endblock %}
+
+{% block content %}
+<section style="max-width:1000px;margin:45px auto;padding:20px;">
+
+    <div style="margin-bottom:25px;">
+        <p style="color:#078cff;font-weight:700;letter-spacing:2px;">EDVANCE TECH CLIENT PORTAL</p>
+        <h1 style="color:#fff;">Contract Review</h1>
+        <p style="color:#aebbd0;">Please read your agreement carefully before signing.</p>
+    </div>
+
+    {% if error %}
+        <div style="background:#49202a;color:#ffdce1;padding:15px;border-radius:8px;margin-bottom:20px;">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <div style="background:#0b1930;border:1px solid #1d3655;border-radius:14px;padding:25px;margin-bottom:25px;">
+        <div style="display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;">
+            <div>
+                <p style="color:#22c8ff;">{{ contract.reference_number }}</p>
+                <h2 style="color:#fff;">{{ contract.title }}</h2>
+                <p style="color:#aebbd0;">Project: {{ contract.project.project_title }}</p>
+                <p style="color:#aebbd0;">Client: {{ contract.client.get_full_name|default:contract.client.username }}</p>
+            </div>
+            <div>
+                <p style="color:#aebbd0;">Contract status</p>
+                <strong style="color:#22c8ff;">{{ contract.get_status_display }}</strong>
+            </div>
+        </div>
+
+        <hr style="border-color:#1d3655;margin:25px 0;">
+
+        <h3 style="color:#fff;">Agreement Terms</h3>
+        <div style="color:#dce6f4;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere;">{{ contract.content }}</div>
+    </div>
+
+    {% if signature %}
+        <div style="background:#123b31;border:1px solid #28765d;border-radius:12px;padding:25px;color:#d8fff0;">
+            <h2>Contract signed successfully</h2>
+            <p>Signed by: {{ signature.signer_full_name }}</p>
+            <p>Signature: {{ signature.typed_signature }}</p>
+            <p>Date and time: {{ signature.signed_at|date:"d M Y, H:i" }}</p>
+            <p>Contract version: {{ signature.contract_version }}</p>
+        </div>
+
+    {% elif contract.status == "Sent" or contract.status == "Viewed" %}
+
+        {% if not request.user.is_staff %}
+            <div style="background:#0b1930;border:1px solid #1d3655;border-radius:14px;padding:25px;">
+                <h2 style="color:#fff;">Accept and sign agreement</h2>
+                <p style="color:#aebbd0;">By signing, you confirm that you have reviewed and agree to the terms above.</p>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <label for="signer_full_name" style="display:block;color:#dce6f4;margin:20px 0 8px;">Full legal name</label>
+                    <input type="text" id="signer_full_name" name="signer_full_name"
+                        value="{{ request.user.get_full_name }}"
+                        required maxlength="200"
+                        style="width:100%;box-sizing:border-box;padding:13px;border-radius:7px;border:1px solid #35516f;background:#071326;color:white;">
+
+                    <label for="typed_signature" style="display:block;color:#dce6f4;margin:20px 0 8px;">Type your signature</label>
+                    <input type="text" id="typed_signature" name="typed_signature"
+                        placeholder="Type your full name as your signature"
+                        required maxlength="200"
+                        style="width:100%;box-sizing:border-box;padding:13px;border-radius:7px;border:1px solid #35516f;background:#071326;color:white;">
+
+                    <label style="display:flex;gap:12px;align-items:flex-start;color:#dce6f4;margin:22px 0;">
+                        <input type="checkbox" name="accept_terms" required style="margin-top:5px;">
+                        <span>I confirm that I have read and understood this agreement and voluntarily agree to its terms.</span>
+                    </label>
+
+                    <button type="submit"
+                        onclick="return confirm('Are you sure you want to sign this contract?');"
+                        style="background:#078cff;color:white;border:0;border-radius:8px;padding:14px 24px;font-weight:700;cursor:pointer;">
+                        Sign Contract
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <div style="background:#0b1930;border:1px solid #1d3655;border-radius:12px;padding:20px;color:#dce6f4;">
+            This contract is not currently available for signing.
+        </div>
+    {% endif %}
+
+    <p style="margin-top:25px;">
+        <a href="{% url 'contract_list' %}" style="color:#22c8ff;text-decoration:none;">← Back to My Contracts</a>
+    </p>
+
+</section>
+{% endblock %}

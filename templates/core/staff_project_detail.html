@@ -1,0 +1,123 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ project.project_title }} | Project Management{% endblock %}
+
+{% block extra_head %}
+<style>
+.project-detail-page{max-width:1150px;margin:auto;padding:45px 20px 80px;color:#fff}
+.project-detail-heading{margin-bottom:25px}
+.project-detail-heading span{color:#22c8ff;font-size:12px;letter-spacing:3px;font-weight:700}
+.project-detail-heading h1{font-size:32px;margin:10px 0}
+.project-muted{color:#a9bbcf}
+.project-card{background:#091a30;border:1px solid #203b55;border-radius:14px;padding:23px;margin-bottom:22px}
+.project-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.project-field small{display:block;color:#8fa8c0;margin-bottom:7px}
+.project-field strong{overflow-wrap:anywhere}
+.project-description{white-space:pre-wrap;line-height:1.7;color:#e6edf5}
+.project-detail-button{display:inline-block;padding:11px 17px;background:#22c8ff;color:#061426;border-radius:8px;text-decoration:none;font-weight:700;border:0;cursor:pointer}
+.project-status-form{display:flex;gap:10px;flex-wrap:wrap}
+.project-status-form select{padding:12px;border:1px solid #29445f;border-radius:8px;background:#071426;color:#fff;min-width:220px}
+.project-detail-message{padding:12px 16px;background:#102f36;border:1px solid #24616b;border-radius:8px;margin-bottom:15px}
+.project-detail-table{width:100%;border-collapse:collapse}
+.project-detail-table th,.project-detail-table td{padding:13px;text-align:left;border-bottom:1px solid #203b55}
+.project-detail-table th{color:#22c8ff;font-size:12px;text-transform:uppercase}
+.project-detail-table a{color:#22c8ff;text-decoration:none;font-weight:700}
+@media(max-width:600px){.project-grid{grid-template-columns:1fr}.project-detail-page{padding:30px 14px}.project-detail-table-wrap{overflow-x:auto}.project-detail-table{min-width:600px}}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="project-detail-page">
+    <div class="project-detail-heading">
+        <span>PROJECT MANAGEMENT</span>
+        <h1>{{ project.project_title }}</h1>
+        <p class="project-muted">{{ project.reference_number }} | Submitted {{ project.created_at|date:"d F Y" }}</p>
+        <a class="project-detail-button" href="{% url 'staff_project_list' %}">Back to projects</a>
+        <a class="project-detail-button" href="{% url 'staff_client_detail' project.client.id %}">Client profile</a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="project-detail-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="project-card">
+        <h2>Project Information</h2>
+        <div class="project-grid">
+            <div class="project-field"><small>Project reference</small><strong>{{ project.reference_number }}</strong></div>
+            <div class="project-field"><small>Project title</small><strong>{{ project.project_title }}</strong></div>
+            <div class="project-field"><small>Client</small><strong>{{ project.client.get_full_name|default:project.client.username }}</strong></div>
+            <div class="project-field"><small>Email</small><strong>{{ project.client.email|default:"Not provided" }}</strong></div>
+            <div class="project-field"><small>Business name</small><strong>{{ project.business_name|default:"Not provided" }}</strong></div>
+            <div class="project-field"><small>Service requested</small><strong>{{ project.get_service_display }}</strong></div>
+            <div class="project-field"><small>Client budget</small><strong>{{ project.get_budget_display }}</strong></div>
+            <div class="project-field"><small>Preferred completion date</small><strong>{{ project.preferred_completion_date|date:"d F Y"|default:"Not specified" }}</strong></div>
+            <div class="project-field"><small>Current status</small><strong>{{ project.get_status_display }}</strong></div>
+            <div class="project-field"><small>Submitted on</small><strong>{{ project.created_at|date:"d F Y, H:i" }}</strong></div>
+        </div>
+    </div>
+
+    <div class="project-card">
+        <h2>Project Requirements</h2>
+        <div class="project-description">{{ project.description }}</div>
+
+        {% if project.supporting_document %}
+            <p style="margin-top:20px">
+                <a class="project-detail-button" href="{{ project.supporting_document.url }}" target="_blank" rel="noopener">
+                    View Supporting Document
+                </a>
+            </p>
+        {% else %}
+            <p class="project-muted">No supporting document was uploaded.</p>
+        {% endif %}
+    </div>
+
+    <div class="project-card">
+        <h2>Update Project Status</h2>
+        <p class="project-muted">Select the current stage of this project.</p>
+
+        <form method="post" class="project-status-form">
+            {% csrf_token %}
+            <select name="status" required>
+                {% for value,label in status_choices %}
+                    <option value="{{ value }}" {% if project.status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <button class="project-detail-button" type="submit">Update Status</button>
+        </form>
+    </div>
+
+    <div class="project-card">
+        <h2>Related Quotations</h2>
+        <div class="project-detail-table-wrap">
+            <table class="project-detail-table">
+                <thead>
+                    <tr>
+                        <th>Quotation</th>
+                        <th>Total</th>
+                        <th>Deposit</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quotation in quotations %}
+                    <tr>
+                        <td>{{ quotation.reference_number }}</td>
+                        <td>R {{ quotation.total_amount|floatformat:2 }}</td>
+                        <td>R {{ quotation.deposit_amount|floatformat:2 }}</td>
+                        <td>{{ quotation.get_status_display }}</td>
+                        <td>{{ quotation.created_at|date:"d M Y" }}</td>
+                        <td><a href="{% url 'staff_quotation_detail' quotation.id %}">Open quotation</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6">No quotations have been created for this project yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

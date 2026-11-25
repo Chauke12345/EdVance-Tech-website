@@ -1,0 +1,335 @@
+﻿{% extends "base.html" %}
+{% block title %}My Quotations | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.quotations-page {
+    padding: 65px 20px 80px;
+}
+.quotations-inner {
+    max-width: 1100px;
+    margin: auto;
+}
+.quotations-heading {
+    margin-bottom: 35px;
+}
+.quotations-heading h1 {
+    font-size: clamp(30px, 5vw, 42px);
+    margin: 12px 0;
+}
+.quotations-heading p {
+    color: #aabbd0;
+}
+.quotation-card {
+    background: linear-gradient(145deg, #0d1c31, #091525);
+    border: 1px solid rgba(34, 200, 255, .2);
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.18);
+}
+.quotation-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(255,255,255,.09);
+}
+.quotation-top h2 {
+    font-size: 23px;
+    margin: 0 0 8px;
+    color: #fff;
+}
+.quotation-project {
+    color: #9fb4ca;
+    font-size: 14px;
+}
+.quotation-status {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(34,200,255,.12);
+    color: #22c8ff;
+}
+.status-accepted {
+    background: rgba(34,197,94,.13);
+    color: #4ade80;
+}
+.status-declined, .status-expired {
+    background: rgba(239,68,68,.13);
+    color: #f87171;
+}
+.status-draft {
+    background: rgba(234,179,8,.13);
+    color: #facc15;
+}
+.quotation-financials {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin: 25px 0;
+}
+.quotation-financial {
+    background: #10243b;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 13px;
+    padding: 20px;
+}
+.quotation-financial span {
+    display: block;
+    color: #9fb4ca;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+.quotation-financial strong {
+    color: #fff;
+    font-size: clamp(17px, 2.5vw, 23px);
+}
+.quotation-financial.total {
+    border-color: rgba(34,200,255,.35);
+}
+.quotation-financial.total strong {
+    color: #22c8ff;
+}
+.quotation-validity {
+    color: #aabbd0;
+    font-size: 14px;
+    margin: 15px 0 28px;
+}
+.quotation-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+.quotation-content-section {
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 13px;
+    padding: 22px;
+    min-width: 0;
+}
+.quotation-content-section h3 {
+    color: #22c8ff;
+    font-size: 16px;
+    margin: 0 0 15px;
+}
+.quotation-content-section p {
+    color: #d0dbea;
+    font-size: 14px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+.quotation-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+    align-items: center;
+}
+.quotation-actions form {
+    margin: 0;
+}
+.quotation-actions button {
+    cursor: pointer;
+}
+.quotation-decline {
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,.25) !important;
+    color: #d0dbea !important;
+}
+.quotation-decline:hover {
+    border-color: #f87171 !important;
+    color: #f87171 !important;
+}
+.quotation-response-note {
+    color: #aabbd0;
+    font-size: 13px;
+    margin-top: 18px;
+}
+.quotation-empty {
+    text-align: center;
+    padding: 55px 25px;
+    border: 1px dashed rgba(34,200,255,.35);
+    border-radius: 18px;
+    background: rgba(13,28,49,.7);
+}
+.quotation-empty h2 {
+    color: #fff;
+    margin-bottom: 12px;
+}
+.quotation-empty p {
+    color: #aabbd0;
+}
+.quotation-back {
+    display: inline-block;
+    margin-top: 30px;
+    color: #22c8ff;
+    text-decoration: none;
+    font-weight: 600;
+}
+.quotation-back:hover {
+    color: #fff;
+}
+.quotation-message {
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background: rgba(34,197,94,.12);
+    border: 1px solid rgba(34,197,94,.3);
+    color: #86efac;
+}
+@media(max-width: 700px) {
+    .quotations-page {
+        padding: 40px 15px 60px;
+    }
+    .quotation-card {
+        padding: 19px;
+    }
+    .quotation-financials {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .quotation-financial {
+        padding: 16px;
+    }
+    .quotation-content {
+        grid-template-columns: 1fr;
+    }
+    .quotation-top h2 {
+        font-size: 19px;
+    }
+    .quotation-actions form,
+    .quotation-actions button {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="quotations-page">
+    <div class="quotations-inner">
+
+        <div class="quotations-heading">
+            <span class="eyebrow">EDVANCE TECH CLIENT PORTAL</span>
+            <h1>My Quotations</h1>
+            <p>Review your project quotations, payment breakdowns and terms.</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="quotation-message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% for quotation in quotations %}
+            <article class="quotation-card">
+
+                <div class="quotation-top">
+                    <div>
+                        <h2>{{ quotation.reference_number }}</h2>
+                        <div class="quotation-project">
+                            Project: {{ quotation.project.project_title }}
+                        </div>
+                    </div>
+
+                    <span class="quotation-status
+                        {% if quotation.status == 'Accepted' %}status-accepted
+                        {% elif quotation.status == 'Declined' %}status-declined
+                        {% elif quotation.status == 'Expired' %}status-expired
+                        {% elif quotation.status == 'Draft' %}status-draft
+                        {% endif %}">
+                        {{ quotation.get_status_display }}
+                    </span>
+                </div>
+
+                <div class="quotation-financials">
+                    <div class="quotation-financial total">
+                        <span>Total quotation</span>
+                        <strong>R {{ quotation.total_amount|floatformat:2 }}</strong>
+                    </div>
+
+                    <div class="quotation-financial">
+                        <span>{{ quotation.deposit_percentage|floatformat:0 }}% deposit</span>
+                        <strong>R {{ quotation.deposit_amount|floatformat:2 }}</strong>
+                    </div>
+
+                    <div class="quotation-financial">
+                        <span>Remaining balance</span>
+                        <strong>R {{ quotation.balance_amount|floatformat:2 }}</strong>
+                    </div>
+                </div>
+
+                <div class="quotation-validity">
+                    <strong>Valid until:</strong>
+                    {{ quotation.valid_until|date:"d F Y"|default:"Not specified" }}
+                </div>
+
+                <div class="quotation-content">
+                    <div class="quotation-content-section">
+                        <h3>Scope of Work</h3>
+                        <p>{{ quotation.scope_of_work|linebreaksbr }}</p>
+                    </div>
+
+                    <div class="quotation-content-section">
+                        <h3>Terms and Conditions</h3>
+                        {% if quotation.terms_and_conditions %}
+                            <p>{{ quotation.terms_and_conditions|linebreaksbr }}</p>
+                        {% else %}
+                            <p>No additional terms have been specified.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if quotation.status == 'Sent' %}
+                    <div class="quotation-actions">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="quotation_id" value="{{ quotation.pk }}">
+                            <input type="hidden" name="action" value="accept">
+                            <button class="btn btn-primary" type="submit">
+                                Accept Quotation
+                            </button>
+                        </form>
+
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="quotation_id" value="{{ quotation.pk }}">
+                            <input type="hidden" name="action" value="decline">
+                            <button class="btn btn-small quotation-decline" type="submit">
+                                Decline Quotation
+                            </button>
+                        </form>
+                    </div>
+                    <p class="quotation-response-note">
+                        Please review the quotation before submitting your decision.
+                    </p>
+                {% elif quotation.status == 'Accepted' %}
+                    <p class="quotation-response-note">
+                        Your acceptance has been recorded. EdVance Tech will contact you regarding the next steps.
+                    </p>
+                {% elif quotation.status == 'Declined' %}
+                    <p class="quotation-response-note">
+                        This quotation has been declined.
+                    </p>
+                {% endif %}
+
+            </article>
+        {% empty %}
+            <div class="quotation-empty">
+                <h2>No quotations available yet</h2>
+                <p>When EdVance Tech sends you a quotation, it will appear here.</p>
+            </div>
+        {% endfor %}
+
+        <a class="quotation-back" href="{% url 'client_dashboard' %}">
+            ← Return to my dashboard
+        </a>
+
+    </div>
+</section>
+{% endblock %}

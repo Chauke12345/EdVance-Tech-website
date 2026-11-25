@@ -1,0 +1,111 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Quotation Management | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.quote-page{max-width:1250px;margin:auto;padding:45px 20px 80px;color:#fff}
+.quote-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:28px}
+.quote-heading span{color:#22c8ff;font-size:12px;letter-spacing:3px;font-weight:700}
+.quote-heading h1{font-size:32px;margin:10px 0}
+.quote-muted{color:#a9bbcf}
+.quote-button{display:inline-block;padding:12px 18px;border-radius:8px;background:#22c8ff;color:#061426;text-decoration:none;font-weight:700;border:0;cursor:pointer}
+.quote-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:25px}
+.quote-stat,.quote-panel{background:#091a30;border:1px solid #203b55;border-radius:14px;padding:20px}
+.quote-stat span{display:block;color:#a9bbcf;font-size:13px}
+.quote-stat strong{display:block;font-size:27px;margin-top:8px}
+.quote-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.quote-filters input,.quote-filters select{padding:12px;border:1px solid #29445f;border-radius:8px;background:#071426;color:#fff}
+.quote-filters input{flex:1;min-width:200px}
+.quote-table-wrap{overflow-x:auto}
+.quote-table{width:100%;border-collapse:collapse;min-width:800px}
+.quote-table th,.quote-table td{padding:14px;text-align:left;border-bottom:1px solid #203b55}
+.quote-table th{color:#22c8ff;font-size:12px;text-transform:uppercase}
+.quote-table td{color:#e6edf5}
+.quote-table a{color:#22c8ff;text-decoration:none;font-weight:700}
+.quote-status{font-weight:700}
+.quote-pagination{display:flex;gap:15px;margin-top:20px}
+.quote-pagination a{color:#22c8ff;text-decoration:none}
+.quote-message{padding:12px 16px;background:#102f36;border:1px solid #24616b;border-radius:8px;margin-bottom:15px}
+@media(max-width:700px){.quote-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.quote-page{padding:30px 14px}}
+@media(max-width:430px){.quote-stats{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="quote-page">
+    <div class="quote-heading">
+        <div>
+            <span>EDVANCE TECH BUSINESS MANAGEMENT</span>
+            <h1>Quotation Management</h1>
+            <p class="quote-muted">Create, review and manage client quotations.</p>
+        </div>
+        <a class="quote-button" href="{% url 'staff_quotation_create' %}">+ Create Quotation</a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="quote-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="quote-stats">
+        <div class="quote-stat"><span>Total Quotations</span><strong>{{ total_quotations }}</strong></div>
+        <div class="quote-stat"><span>Drafts</span><strong>{{ draft_quotations }}</strong></div>
+        <div class="quote-stat"><span>Sent</span><strong>{{ sent_quotations }}</strong></div>
+        <div class="quote-stat"><span>Accepted</span><strong>{{ accepted_quotations }}</strong></div>
+        <div class="quote-stat"><span>Declined</span><strong>{{ declined_quotations }}</strong></div>
+        <div class="quote-stat"><span>Expired</span><strong>{{ expired_quotations }}</strong></div>
+    </div>
+
+    <div class="quote-panel">
+        <form method="get" class="quote-filters">
+            <input type="search" name="q" value="{{ search }}" placeholder="Search client or project">
+            <select name="status">
+                <option value="all" {% if selected_status == "all" %}selected{% endif %}>All statuses</option>
+                {% for value,label in status_choices %}
+                    <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <button class="quote-button" type="submit">Filter</button>
+            <a class="quote-button" href="{% url 'staff_dashboard' %}">Dashboard</a>
+        </form>
+
+        <div class="quote-table-wrap">
+            <table class="quote-table">
+                <thead>
+                    <tr>
+                        <th>Reference</th><th>Client</th><th>Project</th>
+                        <th>Total</th><th>Status</th><th>Created</th><th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quotation in page_obj %}
+                    <tr>
+                        <td>{{ quotation.reference_number }}</td>
+                        <td>{{ quotation.project.client.get_full_name|default:quotation.project.client.username }}</td>
+                        <td>{{ quotation.project.project_title }}</td>
+                        <td>R {{ quotation.total_amount|floatformat:2 }}</td>
+                        <td class="quote-status">{{ quotation.get_status_display }}</td>
+                        <td>{{ quotation.created_at|date:"d M Y" }}</td>
+                        <td><a href="{% url 'staff_quotation_detail' quotation.id %}">Open</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7">No quotations found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="quote-pagination">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ search|urlencode }}&status={{ selected_status }}&page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span class="quote-muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?q={{ search|urlencode }}&status={{ selected_status }}&page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

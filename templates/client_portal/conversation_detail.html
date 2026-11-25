@@ -1,0 +1,335 @@
+﻿{% extends "base.html" %}
+{% block title %}{{ conversation.subject }} | EdVance Tech{% endblock %}
+
+{% block extra_head %}
+<style>
+.chat-page {
+    padding: 45px 18px 75px;
+}
+.chat-container {
+    max-width: 950px;
+    margin: auto;
+}
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 23px;
+    background: linear-gradient(135deg,#10243b,#091525);
+    border: 1px solid rgba(34,200,255,.2);
+    border-radius: 17px 17px 0 0;
+}
+.chat-avatar {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 15px;
+    background: rgba(34,200,255,.14);
+    color: #22c8ff;
+    font-size: 22px;
+    font-weight: 700;
+}
+.chat-header h1 {
+    font-size: 21px;
+    margin: 0 0 7px;
+    color: #fff;
+}
+.chat-header p {
+    font-size: 13px;
+    color: #9fb4ca;
+    margin: 0;
+}
+.chat-back {
+    margin-left: auto;
+    color: #22c8ff;
+    text-decoration: none;
+    font-size: 13px;
+    white-space: nowrap;
+}
+.chat-messages {
+    min-height: 380px;
+    max-height: 600px;
+    overflow-y: auto;
+    padding: 28px 24px;
+    background: #071426;
+    border-left: 1px solid rgba(255,255,255,.07);
+    border-right: 1px solid rgba(255,255,255,.07);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+.chat-date {
+    text-align: center;
+    color: #8298ae;
+    font-size: 11px;
+    margin: 5px 0;
+}
+.chat-message {
+    display: flex;
+    flex-direction: column;
+    max-width: 78%;
+    gap: 7px;
+}
+.chat-message.mine {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+.chat-message.theirs {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+.chat-sender {
+    font-size: 12px;
+    font-weight: 700;
+    color: #aabbd0;
+}
+.chat-bubble {
+    padding: 14px 17px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+.mine .chat-bubble {
+    background: linear-gradient(135deg,#07528a,#073b62);
+    border: 1px solid rgba(34,200,255,.22);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+.theirs .chat-bubble {
+    background: #14283e;
+    border: 1px solid rgba(255,255,255,.07);
+    color: #e0eaf5;
+    border-bottom-left-radius: 4px;
+}
+.chat-time {
+    font-size: 10px;
+    color: #8499ad;
+}
+.chat-composer {
+    padding: 22px;
+    background: #0d1c31;
+    border: 1px solid rgba(34,200,255,.16);
+    border-radius: 0 0 17px 17px;
+}
+.chat-composer label {
+    display: block;
+    color: #aabbd0;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+.chat-input-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+.chat-input-row textarea {
+    flex: 1;
+    min-width: 0;
+    resize: vertical;
+    min-height: 52px;
+    max-height: 180px;
+    padding: 15px;
+    color: white;
+    background: #071426;
+    border: 1px solid #29435f;
+    border-radius: 11px;
+    font: inherit;
+}
+.chat-input-row textarea:focus {
+    outline: 1px solid #22c8ff;
+    border-color: #22c8ff;
+}
+.chat-send {
+    min-height: 50px;
+    white-space: nowrap;
+}
+.chat-empty {
+    margin: auto;
+    text-align: center;
+    color: #9fb4ca;
+}
+.chat-empty strong {
+    display: block;
+    color: white;
+    margin-bottom: 8px;
+}
+@media(max-width:600px) {
+    .chat-page { padding: 25px 10px 50px; }
+    .chat-header { padding: 17px 13px; gap: 11px; }
+    .chat-avatar { width: 43px; height: 43px; }
+    .chat-header h1 { font-size: 17px; }
+    .chat-back { font-size: 11px; }
+    .chat-messages { padding: 22px 13px; min-height: 350px; }
+    .chat-message { max-width: 90%; }
+    .chat-composer { padding: 15px; }
+    .chat-input-row { flex-direction: column; align-items: stretch; }
+    .chat-send { width: 100%; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="chat-page">
+<div class="chat-container">
+
+    <div class="chat-header">
+        <div class="chat-avatar">E</div>
+        <div>
+            <h1>{{ conversation.subject }}</h1>
+            <p>
+                {{ conversation.project.project_title }}
+                {% if request.user.is_staff %}
+                    · Client: {{ conversation.client.username }}
+                {% else %}
+                    · EdVance Tech Support
+                {% endif %}
+            </p>
+        </div>
+        <a class="chat-back" href="{% url 'message_inbox' %}">
+            ← Messages
+        </a>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+
+        {% for message in conversation_messages %}
+            <div class="chat-message {% if message.sender_id == request.user.id %}mine{% else %}theirs{% endif %}" data-message-id="{{ message.id }}">
+
+                <span class="chat-sender">
+                    {% if message.sender_id == request.user.id %}
+                        You
+                    {% else %}
+                        {{ message.sender.get_full_name|default:message.sender.username }}
+                    {% endif %}
+                </span>
+
+                <div class="chat-bubble">{{ message.body }}</div>
+
+                <span class="chat-time">
+                    {{ message.created_at|date:"d M Y, H:i" }}
+                    {% if message.sender_id == request.user.id %}
+                        · {% if message.is_read %}✓✓ Read{% else %}✓ Sent{% endif %}
+                    {% endif %}
+                </span>
+
+            </div>
+        {% empty %}
+            <div class="chat-empty">
+                <strong>Start your conversation</strong>
+                Your messages with EdVance Tech will appear here.
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="chat-composer">
+        <form method="post">
+            {% csrf_token %}
+            <label for="body">Write your message</label>
+
+            <div class="chat-input-row">
+                <textarea name="body" id="body" rows="2"
+                    placeholder="Type your message here..."
+                    required></textarea>
+
+                <button class="btn btn-primary chat-send" type="submit">
+                    Send message →
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const chat = document.getElementById("chatMessages");
+    if (!chat) return;
+
+    const updatesUrl = "{% url 'conversation_updates' conversation.id %}";
+    const currentUserId = Number("{{ request.user.id }}");
+    let lastId = 0;
+
+    chat.querySelectorAll("[data-message-id]").forEach(function (item) {
+        lastId = Math.max(lastId, Number(item.dataset.messageId));
+    });
+
+    chat.scrollTop = chat.scrollHeight;
+
+    async function refreshMessages() {
+        try {
+            const response = await fetch(updatesUrl + "?after=" + lastId);
+            if (!response.ok) return;
+
+            const data = await response.json();
+
+            data.messages.forEach(function (message) {
+                if (message.id <= lastId) return;
+
+                const mine = message.sender_id === currentUserId;
+                const wrapper = document.createElement("div");
+                wrapper.className = "chat-message " + (mine ? "mine" : "theirs");
+                wrapper.dataset.messageId = message.id;
+
+                const sender = document.createElement("span");
+                sender.className = "chat-sender";
+                sender.textContent = mine ? "You" : message.sender_name;
+
+                const bubble = document.createElement("div");
+                bubble.className = "chat-bubble";
+                bubble.textContent = message.body;
+
+                const time = document.createElement("span");
+                time.className = "chat-time";
+                time.textContent = message.created_at + (mine ? " · ✓ Sent" : "");
+
+                wrapper.append(sender, bubble, time);
+                chat.appendChild(wrapper);
+                lastId = message.id;
+            });
+
+            data.read_ids.forEach(function (id) {
+                const item = chat.querySelector('[data-message-id="' + id + '"]');
+                if (!item) return;
+
+                const time = item.querySelector(".chat-time");
+                if (time && time.textContent.includes("Sent")) {
+                    time.textContent = time.textContent.replace("Sent", "✓✓ Read");
+                }
+            });
+
+            const badge = document.querySelector(".nav-notification-badge");
+            const link = document.querySelector(".nav-message-link");
+
+            if (data.unread_count > 0 && link) {
+                let counter = badge;
+                if (!counter) {
+                    counter = document.createElement("span");
+                    counter.className = "nav-notification-badge";
+                    link.appendChild(counter);
+                }
+                counter.textContent = data.unread_count;
+            } else if (badge) {
+                badge.remove();
+            }
+
+            if (data.messages.length > 0) {
+                chat.scrollTop = chat.scrollHeight;
+            }
+        } catch (error) {
+            console.error("Chat update failed:", error);
+        }
+    }
+
+    setInterval(refreshMessages, 3000);
+});
+</script>
+{% endblock %}
+
