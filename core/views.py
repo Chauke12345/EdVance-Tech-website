@@ -17,6 +17,13 @@ def about(request):
 def contact(request):
     submitted = False
 
+    package_mapping = {
+        'Starter Website': 'Business website',
+        'Business Website': 'Business website',
+        'E-commerce Website': 'E-commerce',
+        'Custom Business Solutions': 'Business system',
+    }
+
     if request.method == 'POST':
         form = EnquiryForm(request.POST)
         if form.is_valid():
@@ -24,7 +31,12 @@ def contact(request):
             submitted = True
             form = EnquiryForm()
     else:
-        form = EnquiryForm()
+        selected_package = request.GET.get('package', '')
+        selected_service = package_mapping.get(selected_package, '')
+
+        form = EnquiryForm(initial={
+            'service': selected_service
+        })
 
     return render(request, 'core/contact.html', {
         'form': form,
